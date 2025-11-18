@@ -321,5 +321,5 @@ See LICENSE file for details.
 
 ---
 
-**Questions?** Reference the design doc for your role in `/docs/DESIGN.md`. For integration issues, check this README's "Integration Flow" section.
+.
 
