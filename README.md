@@ -314,7 +314,7 @@ See LICENSE file for details.
 
 ## 👥 Contributors
 
-- Frontend Developer: [Name]
+- Frontend Developer: [Obembe Eyitayo](https://github.com/davistar21)
 - Backend Developer: [Name]
 - Blockchain Developer: [Name]
 - AI Developer: [Name]
