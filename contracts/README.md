@@ -14,6 +14,7 @@ Welcome, Blockchain Developer! This folder contains the BLOCKEDLEARNING smart co
 - Node.js 18+
 - Wallet with Camp testnet tokens
 - Camp SDK key
+- Note: AI service is pre-deployed at `https://blockedlearning-production.up.railway.app` ✅
 
 ## Installation
 
@@ -31,6 +32,18 @@ PRIVATE_KEY=your_wallet_private_key
 CAMP_TESTNET_RPC=https://basecamp.camp/rpc
 CAMP_SDK_KEY=your_camp_sdk_key
 ```
+
+## AI Service Status
+
+✅ **Deployed & Running** at `https://blockedlearning-production.up.railway.app`
+
+The BLOCKEDLEARNING AI service (CheckMate) is already deployed on Railway. It provides:
+- Learning mentor with personalized explanations and recommendations
+- Content intelligence (video analysis, quiz generation, quality scoring)
+- Industry trend analysis and career insights
+- 13 total endpoints, all tested and working
+
+No blockchain integration needed for AI service—it operates independently. Backend will proxy requests from frontend to the AI service.
 
 ## Quick Start
 

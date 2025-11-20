@@ -14,6 +14,7 @@ Welcome, Backend Developer! This folder contains the BLOCKEDLEARNING API server.
 - Node.js 18+
 - PostgreSQL 12+ (or Supabase)
 - Camp SDK key & testnet RPC endpoint
+- Access to AI service at `https://blockedlearning-production.up.railway.app` (already deployed ✅)
 
 ## Installation
 
@@ -42,6 +43,40 @@ npm run dev
 ```
 
 Server runs on `http://localhost:3001`.
+
+## AI Service Integration
+
+The AI service is already deployed and running. To use it in your backend:
+
+1. **Proxy Endpoints:** Create routes that forward requests to the AI service
+   ```javascript
+   const AI_BASE = 'https://blockedlearning-production.up.railway.app';
+   app.post('/api/mentor/explain', async (req, res) => {
+     const response = await fetch(`${AI_BASE}/mentor/explain`, {
+       method: 'POST',
+       headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify(req.body)
+     });
+     res.json(await response.json());
+   });
+   ```
+
+2. **Available AI Endpoints:**
+   - `POST /mentor/explain` — Personalized explanations
+   - `POST /mentor/suggest` — Next-step recommendations
+   - `POST /mentor/profile` — Learning profile & 4-week plan
+   - `POST /mentor/audit-code` — Code security auditing
+   - `POST /mentor/generate-project` — Project templates
+   - `POST /analyze/video` — Video metadata extraction
+   - `POST /generate/quiz` — Auto-generate quizzes
+   - `POST /search/semantic` — Semantic search
+   - `POST /recommend/next` — Video recommendations
+   - `GET /trends/industry` — Industry trends
+   - `GET /health` — Health check
+
+3. **Documentation:** Full API docs at `https://blockedlearning-production.up.railway.app/docs`
+
+4. **Rate Limiting:** Implement rate limiting (suggested: 10 requests/minute per user)
 
 ## Database
 

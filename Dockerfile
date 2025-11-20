@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY AI/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY AI . .
+COPY AI . 
 
 RUN useradd -m -u 1000 aiuser && chown -R aiuser:aiuser /app
 USER aiuser

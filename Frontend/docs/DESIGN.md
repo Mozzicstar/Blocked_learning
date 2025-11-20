@@ -74,17 +74,26 @@ Assume backend base URL `API_BASE`.
 
 ### CheckMate
 
-* `POST ${API_BASE}/api/mentor/suggest` body `{ wallet, progress }` → `{ suggestion, nextSteps }`
-* `POST ${API_BASE}/api/mentor/explain` body `{ question }` → `{ topic, explanation, recommendedModules }`
+* `POST ${API_BASE}/api/mentor/suggest` body `{ topic, progress }` → `{ suggestion, nextSteps, recommended_modules }`
+* `POST ${API_BASE}/api/mentor/explain` body `{ topic, level }` → `{ topic, explanation, code_examples, difficulty_level }`
+* `POST ${API_BASE}/api/mentor/profile` body `{ wallet, total_modules, topics_breakdown, learning_pace, total_hours, skill_level }` → `{ skill_level, strengths, weaknesses, four_week_plan, career_readiness }`
+* `POST ${API_BASE}/api/mentor/audit-code` body `{ code }` → `{ vulnerabilities, severity, recommendations }`
+* `POST ${API_BASE}/api/mentor/generate-project` body `{ topic, difficulty }` → `{ project_name, description, modules, starter_code }`
 
 ### Blockchain
 
 * `POST ${API_BASE}/api/register-ip` body `{ tempId, metadataHash, creator }` → `{ txHash, ipTokenId }`
 * `GET ${API_BASE}/api/contract-info` → returns contract addresses & ABIs for frontend read calls
 
+### Content Intelligence
+
+* `POST ${API_BASE}/api/analyze/video` body `{ video_id, title }` → `{ metadata, topics, objectives, difficulty_level }`
+* `POST ${API_BASE}/api/generate/quiz` body `{ video_id }` → `{ quiz_questions, answers, difficulty }`
+
 ### Trending
 
 * `GET ${API_BASE}/api/trending` → `[{ id, title, summary, tag, sourceUrl, date }]`
+* `GET ${API_BASE}/api/trends/industry` → `{ trending_skills, career_paths, market_insights, salary_trends }`
 
 ## UX Flows (exact)
 
@@ -131,3 +140,59 @@ Assume backend base URL `API_BASE`.
 * Deployed Vercel URL
 * `/frontend` folder with clear README and component docs
 * Storybook (optional) for components
+
+## AI Integration (CheckMate Mentor Panel)
+
+**Status:** ✅ AI service deployed and ready for integration
+
+### Available AI Features
+
+The CheckMate mentor system is now powered by the deployed AI service. Frontend can integrate:
+
+#### Learning Mentor Features
+
+* **Explain Topics** — Get personalized explanations with code examples
+* **Next-Step Suggestions** — AI recommends what to learn next based on progress
+* **Learning Profile** — Comprehensive analysis with 4-week personalized learning plan
+* **Code Auditing** — Security vulnerability detection for practice code
+* **Project Generation** — Custom project templates based on skill level and topic
+
+#### Content Intelligence Features
+
+* **Video Analysis** — Auto-generate metadata (topics, objectives, difficulty) from video content
+* **Quality Scoring** — Assess content quality to maintain standards
+* **Quiz Generation** — Auto-create quizzes from video content
+* **Thumbnail Generation** — Smart AI-generated thumbnails
+
+#### Discovery Features
+
+* **Semantic Search** — Find content using natural language
+* **Recommendations** — Get personalized video recommendations
+* **Industry Trends** — See trending skills and career paths with salary insights
+
+### Integration Points
+
+1. Add "CheckMate Mentor" button/panel to `/dashboard` and `/courses/[id]`
+2. Create `components/MentorPanel.tsx` that calls `/api/mentor/*` endpoints
+3. Show "Industry Trends" on `/trending` page with career insights
+4. Add quiz generation UI to course upload flow for creators
+
+### Example Component
+
+```tsx
+// components/MentorChat.tsx
+const mentorExplain = async (topic: string, level: string) => {
+  const res = await fetch('/api/mentor/explain', {
+    method: 'POST',
+    body: JSON.stringify({ topic, level })
+  });
+  return res.json();
+};
+```
+
+### Service Details
+
+* **AI Model:** Google Gemini 2.0 Flash
+* **Deployed On:** Railway (https://blockedlearning-production.up.railway.app)
+* **All Endpoints:** Documented at `/docs` endpoint
+* **Response Time:** ~2-5 seconds per request
