@@ -1,5 +1,13 @@
 {
+  "$schema": "https://raw.githubusercontent.com/railwayapp/stationery/main/schema.json",
   "build": {
-    "builder": "DOCKERFILE"
+    "builder": "DOCKERFILE",
+    "context": "AI"
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "startCommand": "python main.py",
+    "restartPolicyMaxRetries": 10,
+    "restartPolicyWindowSeconds": 60
   }
 }
