@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/railwayapp/stationery/main/schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "context": "AI"
+    "context": "."
   },
   "deploy": {
     "numReplicas": 1,
