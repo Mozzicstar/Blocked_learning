@@ -1,0 +1,10 @@
+{
+  "build": {
+    "builder": "DOCKERFILE",
+    "context": "."
+  },
+  "deploy": {
+    "restartPolicyMaxRetries": 10,
+    "restartPolicyWindowSeconds": 60
+  }
+}

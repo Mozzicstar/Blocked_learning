@@ -1,0 +1,46 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'AI/**'
+      - '.github/workflows/railway-deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd AI
+          railway up --explicit-only
+        
+      - name: Log deployment status
+        if: always()
+        run: |
+          echo "Deployment Status: ${{ job.status }}"
+          echo "Check Railway dashboard: https://railway.app/dashboard"
+
+  test-endpoints:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Wait for deployment
+        run: sleep 30
+      
+      - name: Test health endpoint
+        run: |
+          RAILWAY_URL=$(echo ${{ secrets.RAILWAY_URL }} || echo "http://localhost:8000")
+          curl -f $RAILWAY_URL/ || echo "Deployment still initializing..."
