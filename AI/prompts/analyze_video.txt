@@ -1,0 +1,31 @@
+Analyze this blockchain education video and extract comprehensive metadata.
+
+Your task:
+1. Identify main topics covered (use specific tags like "smart_contracts", "security", "defi")
+2. Determine difficulty level (beginner/intermediate/advanced)
+3. Extract clear learning objectives (what will students learn?)
+4. Identify prerequisites (what should they know first?)
+5. Generate a compelling 2-sentence description for the course catalog
+6. Summarize key concepts covered
+7. Estimate video duration in minutes
+8. Detect language spoken
+
+Guidelines:
+- Be specific with topics (not just "blockchain" but "smart_contracts", "solidity", "evm")
+- Learning objectives should be actionable ("Deploy a smart contract" not "Learn about contracts")
+- Description should be engaging and informative
+- Prerequisites should be realistic (don't require too much)
+
+Return ONLY valid JSON:
+{{
+  "title": "compelling title based on content",
+  "description": "2-sentence engaging description",
+  "topics": ["tag1", "tag2", "tag3"],
+  "difficulty": "beginner|intermediate|advanced",
+  "prerequisites": ["prerequisite_topic1", "prerequisite_topic2"],
+  "learning_objectives": ["objective1", "objective2", "objective3"],
+  "duration_minutes": 15,
+  "key_concepts": ["concept1", "concept2"],
+  "language": "english",
+  "summary": "detailed summary of video content (3-4 sentences)"
+}}

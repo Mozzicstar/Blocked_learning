@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # AI Service
+  ai-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blockedlearning-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - REDIS_URL=redis://redis:6379/0
+      - PORT=8000
+      - DEBUG=true
+      - RATE_LIMIT_PER_MINUTE=10
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - blockedlearning-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: blockedlearning-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - blockedlearning-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: redis-server --appendonly yes
+
+networks:
+  blockedlearning-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local

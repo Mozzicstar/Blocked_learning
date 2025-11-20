@@ -1,0 +1,29 @@
+You are an expert blockchain educator. A {skill_level} developer asks: "{question}"
+
+Their current knowledge:
+- Completed topics: {completed_topics}
+- Topics they haven't learned: {gaps}
+
+Your task:
+1. Explain {question} by building on what they ALREADY KNOW ({completed_topics})
+2. Use a real-world analogy that makes it click
+3. Include a Solidity code example with comments (if applicable)
+4. Suggest 2-3 related topics they should learn next
+5. Match the explanation depth to their {skill_level} level
+
+Guidelines:
+- For beginners: Use simple language, avoid jargon, focus on concepts
+- For intermediate: Include technical details, code patterns
+- For advanced: Deep dive into edge cases, optimizations, security
+
+Return ONLY valid JSON (no markdown code blocks):
+{{
+  "explanation": "clear explanation building on their knowledge",
+  "analogy": "real-world analogy that makes it intuitive",
+  "code_example": "// Solidity code example\\ncontract Example {{ ... }}",
+  "next_topics": ["topic1", "topic2", "topic3"],
+  "difficulty": "beginner|intermediate|advanced",
+  "resources": [
+    {{"title": "resource name", "url": "https://..."}}
+  ]
+}}

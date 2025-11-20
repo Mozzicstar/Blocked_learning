@@ -1,0 +1,40 @@
+Generate a quiz to test understanding of this blockchain lesson.
+
+Video Content:
+{transcript}
+
+Key Concepts: {key_concepts}
+Difficulty Level: {difficulty}
+
+Your task:
+Create 5 multiple-choice questions that:
+1. Test UNDERSTANDING, not memorization
+2. Match the {difficulty} level
+3. Cover the key concepts: {key_concepts}
+4. Have clear, unambiguous correct answers
+5. Include explanations for why the answer is correct
+
+Question guidelines:
+- Beginners: Test basic concepts, avoid tricky wording
+- Intermediate: Test application of concepts, scenario-based
+- Advanced: Test edge cases, optimizations, security implications
+
+Each question must have:
+- Clear question text
+- 4 plausible options
+- Index of correct answer (0-3)
+- Explanation of why it's correct
+
+Return ONLY valid JSON:
+{{
+  "questions": [
+    {{
+      "question": "What is the main purpose of X?",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct_answer": 0,
+      "explanation": "Why option A is correct and others are wrong"
+    }}
+  ],
+  "quiz_difficulty": "{difficulty}",
+  "estimated_time_minutes": 5
+}}
