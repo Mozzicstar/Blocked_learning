@@ -1,30 +1,33 @@
-import axios from "axios";
+// lib/api.mock.ts
+import { client } from "./client";
+import {
+  getCoursesSeed,
+  getCourseSeed,
+  completeModuleSeed,
+  getDashboardSeed,
+  getTrendingSeed,
+  getModuleSeed,
+} from "@/stores/useCourseStore";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE;
-
-const client = axios.create({
-  baseURL: BASE,
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, // optional — remove if you don't need cookies
-});
+const simulate = <T>(value: T, ms = 300): Promise<T> =>
+  new Promise((res) => setTimeout(() => res(value), ms));
 
 export const api = {
   async getCourses() {
-    const res = await client.get("/api/courses");
-    return res.data;
+    return simulate(getCoursesSeed(), 300);
   },
-
+  async getCourse(id: string) {
+    const data = getCourseSeed(id);
+    if (!data) throw new Error("Course not found");
+    return simulate(data, 300);
+  },
   async getTrending() {
-    const res = await client.get("/api/trending");
-    return res.data;
+    return simulate(getTrendingSeed(), 250);
   },
-
-  async markModule(id: string) {
-    const res = await client.post("/api/user/progress", {
-      moduleId: id,
-    });
-    return res.data;
+  async completeModule(id: string) {
+    return simulate(completeModuleSeed(id), 200);
+  },
+  async getDashboard(wallet?: string) {
+    return simulate(getDashboardSeed(wallet), 250);
   },
 };
