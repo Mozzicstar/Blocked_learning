@@ -38,7 +38,7 @@ export default function CourseDetailPage({
     };
   }, [id, setCourses]);
 
-  // if (loading && !course) return <LoadingSkeleton rows={6} />;
+  if (loading && !course) return <LoadingSkeleton rows={6} />;
 
   if (!course) return <div>Course not found.</div>;
 
