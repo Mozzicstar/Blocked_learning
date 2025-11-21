@@ -1,3 +1,7 @@
+// types/index.ts
+/**
+ * Shared types for Tickets and ATMs
+ */
 declare global {
   type Module = {
     id: string;
