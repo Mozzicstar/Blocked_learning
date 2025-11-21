@@ -1,28 +1,23 @@
+// components/Navbar.tsx
 "use client";
-
-import { WalletConnect } from "./WalletConnect";
-import { motion } from "framer-motion";
 import Link from "next/link";
+import { WalletConnect } from "./WalletConnect";
 
 export default function Navbar() {
   return (
-    <motion.header
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      className="w-full border-b bg-white"
-    >
+    <header className="w-full border-b bg-white">
       <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="font-semibold text-lg">
           BlockedLearning
         </Link>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <Link href="/courses">Courses</Link>
           <Link href="/trending">Trending</Link>
-          <Link href="/creator">Creator</Link>
+          <Link href="/dashboard">Dashboard</Link>
           <WalletConnect />
         </div>
       </nav>
-    </motion.header>
+    </header>
   );
 }
