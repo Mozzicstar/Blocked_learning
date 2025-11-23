@@ -6,6 +6,7 @@ import { courseRoutes } from './routes/courses.js';
 import { progressRoutes } from './routes/progress.js';
 import { mentorRoutes } from './routes/mentor.js';
 import { contentRoutes } from './routes/content.js';
+import { adminRoutes } from './routes/admin.js';
 
 const app = Fastify({
   logger: {
@@ -37,6 +38,7 @@ app.register(courseRoutes);
 app.register(progressRoutes);
 app.register(mentorRoutes);
 app.register(contentRoutes);
+app.register(adminRoutes);
 
 // Health check endpoint
 app.get('/health', async () => {

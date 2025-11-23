@@ -69,9 +69,18 @@ export const initializeDatabase = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         wallet TEXT UNIQUE NOT NULL,
         display_name TEXT,
+        status TEXT DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+
+    // Add status column if it doesn't exist (for existing databases)
+    try {
+      sqlite.prepare('SELECT status FROM users LIMIT 1').get();
+    } catch (e) {
+      console.log('Adding status column to users table...');
+      sqlite.exec('ALTER TABLE users ADD COLUMN status TEXT DEFAULT "active"');
+    }
 
     // Create courses table
     sqlite.exec(`
