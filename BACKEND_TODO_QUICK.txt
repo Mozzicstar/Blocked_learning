@@ -22,8 +22,8 @@ PHASE 3: COURSE MANAGEMENT (Core Feature)
 [ ] GET /api/courses (list all courses with pagination)
 [ ] GET /api/courses/:id (course details with modules)
 [ ] POST /api/courses/upload (upload course metadata)
-[ ] POST /api/courses/publish (register on blockchain via Camp SDK)
-[ ] GET /api/courses/onchain (query onchain courses)
+[ ] TODO LATER: POST /api/courses/publish (⚠️ Needs blockchain guy)
+[ ] TODO LATER: GET /api/courses/onchain (⚠️ Needs blockchain guy)
 
 PHASE 4: PROGRESS TRACKING (User Data)
 -------
@@ -51,10 +51,12 @@ PHASE 6: CONTENT INTELLIGENCE (Video Features)
 
 PHASE 7: BLOCKCHAIN INTEGRATION (Web3)
 -------
-[ ] Setup Camp Origin SDK
-[ ] Implement IP registration function
-[ ] Implement onchain course querying
-[ ] Setup event listeners for IP registration
+[ ] TODO LATER: Setup Camp Origin SDK
+[ ] TODO LATER: Implement IP registration function
+[ ] TODO LATER: Implement onchain course querying
+[ ] TODO LATER: Setup event listeners for IP registration
+⚠️ BLOCKED: Waiting on blockchain guy to provide functions
+   See: BLOCKCHAIN_INTEGRATION_REQUIREMENTS.txt
 
 PHASE 8: ADMIN & UTILITIES (Developer Tools)
 -------
@@ -155,14 +157,54 @@ IMPORTANT REMINDERS
 
 EXECUTION ORDER
 ================
-1. Phase 1: Setup (Day 1)
-2. Phase 2: Auth (Day 1)
-3. Phase 3: Courses (Day 2)
-4. Phase 4: Progress (Day 2)
-5. Phase 5: AI Integration (Day 2)
-6. Phase 6: Content Features (Day 3)
-7. Phase 7: Blockchain (Day 3)
+1. Phase 1: Setup (Day 1) ✅ START NOW
+2. Phase 2: Auth (Day 1) ✅ START NOW
+3. Phase 3: Courses (Day 2) - Most can start, 2 endpoints blocked
+4. Phase 4: Progress (Day 2) ✅ START NOW
+5. Phase 5: AI Integration (Day 2) ✅ START NOW
+6. Phase 6: Content Features (Day 3) ✅ START NOW
+7. Phase 7: Blockchain (Day 3) ⏸️ BLOCKED - Waiting on blockchain guy
 8. Phase 8-10: Polish & Deploy (Day 3-4)
 
+⚠️ YOU DON'T NEED TO WAIT FOR BLOCKCHAIN GUY FOR MOST WORK!
+   Only 2 endpoints are blocked:
+   - POST /api/courses/publish
+   - GET /api/courses/onchain
+
 Start with: npm init, npm install, create .env, setup database migrations
+
+---
+
+🚧 TODO LATER - BLOCKCHAIN INTEGRATION
+========================================
+
+BLOCKED ENDPOINTS (Need Blockchain Guy)
+--------
+❌ POST /api/courses/publish
+   Needs: registerIP() function from blockchain dev
+   
+❌ GET /api/courses/onchain
+   Needs: getCoursesOnchain(), getCourse(), getCreatorCourses() from blockchain dev
+
+WHAT TO ASK BLOCKCHAIN GUY
+----------------------------
+See: BLOCKCHAIN_INTEGRATION_REQUIREMENTS.txt for complete details
+
+Quick summary:
+1. registerIP({ fileCid, title, description, tags, creator, royalty? })
+   → returns { txHash, ipTokenId, metadataHash }
+
+2. getCoursesOnchain() → returns all courses
+
+3. getCourse(ipTokenId) → returns specific course
+
+4. getCreatorCourses(wallet) → returns creator's courses
+
+5. Contract address + ABI for Camp Basecamp testnet
+
+6. RPC endpoint & testnet faucet link
+
+DECISION: You CAN start everything else while waiting!
+Build all other endpoints first, then integrate blockchain functions when ready.
+
 ok

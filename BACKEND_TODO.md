@@ -90,17 +90,19 @@ do # BLOCKEDLEARNING Backend Development Todo List
 - [ ] Prepare `registerPayload` for blockchain registration
 - [ ] Return tempId + registerPayload to frontend
 
-### [ ] 3.4 Course Publishing (Blockchain Registration)
+### [ ] 3.4 Course Publishing (Blockchain Registration) - ⚠️ BLOCKED
+**Status:** Waiting on blockchain guy to provide `registerIP()` function
 - [ ] Implement `POST /api/courses/publish` endpoint
 - [ ] Accept: tempId, metadataHash, creator
-- [ ] Call Camp Origin SDK to register IP token
+- [ ] Call blockchain guy's `registerIP()` function (via Camp Origin SDK)
 - [ ] Store returned `ipTokenId` and `txHash` in database
 - [ ] Update course status to `'published'`
 - [ ] Return: ipTokenId, txHash, metadataHash
 
-### [ ] 3.5 Onchain Courses Query
+### [ ] 3.5 Onchain Courses Query - ⚠️ BLOCKED
+**Status:** Waiting on blockchain guy to provide read functions
 - [ ] Implement `GET /api/courses/onchain` endpoint
-- [ ] Query Camp SDK for registered IP tokens
+- [ ] Query blockchain guy's read functions for registered IP tokens
 - [ ] Filter & return onchain courses only
 - [ ] Include ipTokenId, metadata references
 
@@ -238,27 +240,29 @@ do # BLOCKEDLEARNING Backend Development Todo List
 
 ---
 
-## 📈 Phase 8: Blockchain Integration
+## 📈 Phase 8: Blockchain Integration - ⚠️ BLOCKED
 
-### [ ] 8.1 Camp SDK Setup
+**Status:** Waiting on blockchain guy - See `BLOCKCHAIN_INTEGRATION_REQUIREMENTS.txt`
+
+### [ ] 8.1 Camp SDK Setup - TODO LATER
 - [ ] Import Camp Origin SDK in `src/services/blockchain.ts`
 - [ ] Initialize SDK with `CAMP_SDK_KEY`
 - [ ] Set up RPC endpoint connection (testnet)
 
-### [ ] 8.2 IP Registration Flow
+### [ ] 8.2 IP Registration Flow - TODO LATER
 - [ ] Implement `registerIP(metadata)` function
 - [ ] Accept: fileCid, title, tags, creator, royalty (optional)
 - [ ] Call Camp Origin SDK to create IP token
 - [ ] Handle response: ipTokenId, metadataHash, txHash
 - [ ] Return results to caller
 
-### [ ] 8.3 Event Listening (Optional)
+### [ ] 8.3 Event Listening (Optional) - TODO LATER
 - [ ] Set up event listener for IP registration events
 - [ ] Listen for contract events from Camp
 - [ ] Update database when events are detected
 - [ ] Handle failed registrations
 
-### [ ] 8.4 Blockchain Service Integration
+### [ ] 8.4 Blockchain Service Integration - TODO LATER
 - [ ] Create `src/services/blockchain.ts`
 - [ ] Export `registerIP()`, `getOnchainCourses()`, etc.
 - [ ] Add error handling & logging
@@ -444,6 +448,55 @@ railway up
 
 ---
 
+## 🚧 TODO LATER - Waiting on Blockchain Guy
+
+These features require coordination with the blockchain developer. See `BLOCKCHAIN_INTEGRATION_REQUIREMENTS.txt` for details.
+
+### Blocked Endpoints (Until blockchain guy provides functions):
+
+1. **`POST /api/courses/publish`** - Course publishing on-chain
+   - ❌ Blocked: Needs `registerIP()` function from blockchain guy
+   - Function should return: `{ txHash, ipTokenId, metadataHash }`
+   - Sync up with blockchain dev to finalize function signature
+
+2. **`GET /api/courses/onchain`** - Query on-chain courses
+   - ❌ Blocked: Needs read functions from blockchain guy
+   - Functions needed:
+     - `getCoursesOnchain()` - list all
+     - `getCourse(ipTokenId)` - get specific
+     - `getCreatorCourses(creatorWallet)` - filter by creator
+
+### Blocked Phase 8: Blockchain Integration
+- [ ] Once blockchain guy provides Camp SDK setup & functions
+- [ ] Create `src/services/blockchain.ts` with their provided functions
+- [ ] Integrate `registerIP()` into `POST /api/courses/publish` endpoint
+- [ ] Integrate read functions into `GET /api/courses/onchain` endpoint
+- [ ] Add event listeners for IP registration (if needed)
+- [ ] Test end-to-end course registration flow
+
+### What You're Waiting For From Blockchain Guy:
+
+✋ **Critical:** Node.js function/module for `registerIP()`
+✋ **Critical:** Read-only functions (getCoursesOnchain, getCourse, getCreatorCourses)
+✋ **Important:** Contract address & ABI for Camp Basecamp testnet
+✋ **Important:** RPC endpoint & testnet faucet link
+✋ **Nice to have:** Integration code examples & error handling guide
+
+**Check:** `BLOCKCHAIN_INTEGRATION_REQUIREMENTS.txt` for exact specifications
+
+---
+
+## 📋 Recommended Execution Order (Without Blockchain)
+
+1. **Phase 1-2 (Day 1):** Setup + Auth ✅ Ready NOW
+2. **Phase 3 (Day 1-2):** Course CRUD (except publish) ✅ Ready NOW
+3. **Phase 4 (Day 2):** Progress Tracking ✅ Ready NOW
+4. **Phase 5-6 (Day 2-3):** AI Service Integration ✅ Ready NOW
+5. **Phase 8 (Day 3-4):** Blockchain Integration ⏸️ Blocked, waiting
+6. **Phase 9-10 (Day 4):** Testing & Deployment ✅ Ready
+
+---
+
 ## 📞 Important Notes
 
 1. **AI Service is Ready:** All 13 endpoints are deployed and working at `https://blockedlearning-production.up.railway.app`
@@ -451,8 +504,9 @@ railway up
 3. **Database First:** Set up database migrations before other work
 4. **Auth First:** Implement authentication early to protect other endpoints
 5. **Rate Limiting:** Essential for AI service endpoints to avoid excessive costs
+6. **Blockchain Coordination:** Sync with blockchain dev ASAP to finalize integration contract
 
 ---
 
-**Status:** Ready to start! Begin with Phase 1 & 2 setup, then move through phases sequentially.
+**Status:** Ready to start! Begin with Phase 1 & 2 setup, then move through phases sequentially. Most work can proceed independently of blockchain integration.
 

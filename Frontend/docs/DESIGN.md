@@ -193,6 +193,7 @@ const mentorExplain = async (topic: string, level: string) => {
 ### Service Details
 
 * **AI Model:** Google Gemini 2.0 Flash
-* **Deployed On:** Railway (https://blockedlearning-production.up.railway.app)
+* **Deployed On:** Railway https://blockedlearning-production.up.railway.app/
 * **All Endpoints:** Documented at `/docs` endpoint
 * **Response Time:** ~2-5 seconds per request
+https://blockedlearning-production.up.railway.app/
