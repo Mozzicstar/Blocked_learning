@@ -1,0 +1,317 @@
+# BLOCKCHAIN GUY - INTEGRATION REQUIREMENTS
+# What Backend Needs From You
+
+---
+
+## 📋 Summary
+
+Backend needs **3 things** from blockchain guy for course endpoints to work:
+
+1. **Registration Function** - to publish courses on-chain
+2. **Read Functions** - to query courses from blockchain
+3. **Contract Details** - addresses, ABI, network info
+
+---
+
+## 🔗 THE 5 COURSE ENDPOINTS
+
+### ✅ DON'T NEED YOU (Backend only)
+```
+GET /api/courses          - List courses (from Backend DB)
+GET /api/courses/:id      - Get course details (from Backend DB)
+POST /api/courses/upload  - Upload metadata (stores in Backend DB)
+```
+
+### ⚠️ NEED YOU (Backend calls your blockchain functions)
+```
+POST /api/courses/publish   - ← NEEDS: Your registration function
+GET /api/courses/onchain    - ← NEEDS: Your read-only functions
+```
+
+---
+
+## 1️⃣ WHAT YOU MUST PROVIDE: Registration Function
+
+### Purpose
+When a course is ready, Backend calls your function to register it on-chain and get an IP token.
+
+### Function Signature (what we'll call)
+```javascript
+registerIP(metadata) {
+  // Input:
+  {
+    fileCid: "QmXxxx...",           // IPFS hash of course file
+    title: "Smart Contracts 101",   // Course title
+    description: "Learn Solidity",  // Course description
+    tags: ["solidity", "web3"],     // Array of topic tags
+    creator: "0x123abc...",         // Creator's wallet address
+    royalty: 10                      // Optional: royalty % (1-100)
+  }
+  
+  // Output:
+  {
+    txHash: "0x789def...",          // Transaction hash
+    ipTokenId: "ip_token_12345",    // ID of IP token created
+    metadataHash: "QmYyyy...",      // IPFS hash of metadata
+    status: "success"               // 'success' or 'error'
+  }
+}
+```
+
+### What This Function Should Do
+1. Take the input metadata
+2. Call Camp Origin SDK to register IP token
+3. Return the results (txHash, ipTokenId, metadataHash)
+4. Handle errors gracefully
+
+### How Backend Will Call It
+```javascript
+// Backend endpoint: POST /api/courses/publish
+app.post('/api/courses/publish', async (req, res) => {
+  const { fileCid, title, description, tags, creator, royalty } = req.body;
+  
+  // Call your function (you need to expose this)
+  const result = await blockchainService.registerIP({
+    fileCic,
+    title,
+    description,
+    tags,
+    creator,
+    royalty
+  });
+  
+  // Store result in Backend DB
+  // Return to Frontend
+});
+```
+
+---
+
+## 2️⃣ WHAT YOU MUST PROVIDE: Read-Only Functions
+
+### Purpose
+Backend needs to query courses that were registered on-chain.
+
+### Function 1: Get All Onchain Courses
+```javascript
+getCoursesOnchain() {
+  // Returns:
+  [
+    {
+      ipTokenId: "ip_token_12345",
+      title: "Smart Contracts 101",
+      creator: "0x123abc...",
+      metadataHash: "QmYyyy...",
+      registeredAt: "2025-11-23"
+    },
+    // ... more courses
+  ]
+}
+```
+
+### Function 2: Get Specific Course
+```javascript
+getCourse(ipTokenId) {
+  // Returns:
+  {
+    ipTokenId: "ip_token_12345",
+    title: "Smart Contracts 101",
+    description: "Learn Solidity",
+    creator: "0x123abc...",
+    metadataHash: "QmYyyy...",
+    tags: ["solidity", "web3"],
+    registeredAt: "2025-11-23"
+  }
+}
+```
+
+### Function 3: Get Creator's Courses
+```javascript
+getCreatorCourses(creatorWallet) {
+  // Returns:
+  [
+    {
+      ipTokenId: "ip_token_12345",
+      title: "Smart Contracts 101",
+      metadataHash: "QmYyyy...",
+      registeredAt: "2025-11-23"
+    },
+    // ... more courses by this creator
+  ]
+}
+```
+
+---
+
+## 3️⃣ WHAT YOU MUST PROVIDE: Contract Details
+
+Backend needs to know:
+
+### Network Information
+- [ ] Network name: **Camp Basecamp testnet** (confirm)
+- [ ] RPC endpoint: `https://...` (provide)
+- [ ] Testnet faucet: `https://...` (provide)
+
+### Contract Information
+- [ ] Contract address on testnet: `0x...`
+- [ ] Contract ABI (JSON file)
+- [ ] How to import/use it (code example)
+
+### Integration Guide
+- [ ] Example of how to call your functions
+- [ ] Error handling guide
+- [ ] Rate limiting (if any)
+- [ ] Gas estimation (if needed)
+
+---
+
+## 🔄 EXAMPLE FLOW (Complete)
+
+```
+1. Frontend creates course & uploads file
+   ↓
+2. Frontend sends to Backend: POST /api/courses/upload
+   {
+     title: "Smart Contracts 101",
+     description: "Learn Solidity",
+     tags: ["solidity", "web3"],
+     fileCid: "QmXxxx...",
+     creator: "0x123abc..."
+   }
+   ↓
+3. Backend stores metadata temporarily in DB
+   ↓
+4. Frontend clicks "Publish"
+   ↓
+5. Frontend sends to Backend: POST /api/courses/publish
+   {
+     tempId: "temp_course_123",
+     metadataHash: "QmYyyy...",
+     creator: "0x123abc..."
+   }
+   ↓
+6. Backend calls YOUR function:
+   blockchainService.registerIP({
+     fileCid: "QmXxxx...",
+     title: "Smart Contracts 101",
+     description: "Learn Solidity",
+     tags: ["solidity", "web3"],
+     creator: "0x123abc...",
+     royalty: 10
+   })
+   ↓
+7. YOUR FUNCTION:
+   - Calls Camp Origin SDK
+   - Registers IP token
+   - Returns: {
+       txHash: "0x789def...",
+       ipTokenId: "ip_token_12345",
+       metadataHash: "QmYyyy..."
+     }
+   ↓
+8. Backend stores ipTokenId in database
+   ↓
+9. Backend returns to Frontend:
+   {
+     success: true,
+     ipTokenId: "ip_token_12345",
+     txHash: "0x789def..."
+   }
+   ↓
+10. Course is now registered on-chain ✅
+```
+
+---
+
+## 📝 QUESTIONS FOR BLOCKCHAIN GUY
+
+Ask him to clarify:
+
+1. **"Can you provide a Node.js function/module that I can import to call Camp Origin SDK?"**
+   - Or: "What's the code example to register an IP token?"
+
+2. **"What's the contract address on Camp Basecamp testnet?"**
+
+3. **"What inputs does your registration function need?"**
+   - Is it: `registerIP(fileCid, title, tags, creator, royalty)`?
+   - Or different?
+
+4. **"What will the output be?"**
+   - Will it return: `{txHash, ipTokenId, metadataHash}`?
+   - Or something different?
+
+5. **"How do I query courses from the blockchain?"**
+   - Can I call functions directly?
+   - Or do I need to listen to events?
+
+6. **"What's the error handling?"**
+   - What errors can be thrown?
+   - How should I retry on failure?
+
+7. **"Do I need the contract ABI?"**
+   - If yes, can you provide it?
+
+8. **"Are there any gas fees I need to handle?"**
+   - Or will you handle it server-side?
+
+---
+
+## ✅ DELIVERABLES YOU NEED FROM BLOCKCHAIN GUY
+
+Create a checklist and send to him:
+
+- [ ] Node.js function/module for `registerIP()`
+- [ ] Node.js functions for `getCoursesOnchain()`, `getCourse()`, `getCreatorCourses()`
+- [ ] Contract address on Camp Basecamp
+- [ ] Contract ABI (JSON)
+- [ ] RPC endpoint URL
+- [ ] Testnet faucet link
+- [ ] Code example showing how to use
+- [ ] Error codes and handling guide
+- [ ] README with integration instructions
+
+---
+
+## 🎯 QUICK MESSAGE TO SEND HIM
+
+```
+Hey! I need the following for backend integration:
+
+1. A Node.js function that registers a course on-chain:
+   registerIP({ fileCid, title, description, tags, creator, royalty? })
+   Should return: { txHash, ipTokenId, metadataHash }
+
+2. Read functions to query courses:
+   - getCoursesOnchain()
+   - getCourse(ipTokenId)
+   - getCreatorCourses(creatorWallet)
+
+3. Contract details:
+   - Contract address on Camp Basecamp testnet
+   - Contract ABI
+   - RPC endpoint & faucet link
+
+4. Integration guide/code example
+
+Can you prioritize this? These are blockers for:
+   POST /api/courses/publish (register course)
+   GET /api/courses/onchain (list onchain courses)
+```
+
+---
+
+## 🚀 WHAT YOU CAN DO WHILE WAITING
+
+You can build everything else WITHOUT the blockchain guy:
+
+✅ Auth endpoints (nonce, verify, JWT)
+✅ Course upload & metadata storage
+✅ Progress tracking
+✅ All AI service proxying (explain, suggest, quiz, etc.)
+✅ Trending & recommendations
+✅ Admin endpoints
+
+Just leave `POST /api/courses/publish` and `GET /api/courses/onchain` as stubs/TODOs until he provides the functions.
+
+---
+

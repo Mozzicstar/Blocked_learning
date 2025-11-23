@@ -1,0 +1,167 @@
+BLOCKEDLEARNING BACKEND DEVELOPMENT - QUICK TODO LIST
+=====================================================
+
+PHASE 1: PROJECT SETUP (Critical First)
+-------
+[ ] Initialize Node.js + Fastify
+[ ] Install dependencies: fastify, pg, ethers.js, jsonwebtoken, dotenv
+[ ] Setup PostgreSQL database (or Supabase)
+[ ] Create database schema (users, courses, modules, progress, trending)
+[ ] Configure .env file with all required variables
+[ ] Setup Fastify app with CORS & error handling
+
+PHASE 2: AUTHENTICATION (Security Critical)
+-------
+[ ] Implement nonce generation (/api/auth/nonce)
+[ ] Implement signature verification (/api/auth/verify) using ethers.js
+[ ] Create JWT middleware for protected routes
+[ ] Implement user profile endpoint (/api/me)
+
+PHASE 3: COURSE MANAGEMENT (Core Feature)
+-------
+[ ] GET /api/courses (list all courses with pagination)
+[ ] GET /api/courses/:id (course details with modules)
+[ ] POST /api/courses/upload (upload course metadata)
+[ ] POST /api/courses/publish (register on blockchain via Camp SDK)
+[ ] GET /api/courses/onchain (query onchain courses)
+
+PHASE 4: PROGRESS TRACKING (User Data)
+-------
+[ ] GET /api/user/progress (get user's completed modules)
+[ ] POST /api/user/progress (mark module complete)
+
+PHASE 5: CHECKMATE AI INTEGRATION (Mentor Features)
+-------
+[ ] Setup AI service proxy client
+[ ] POST /api/mentor/explain (forward to AI service)
+[ ] POST /api/mentor/suggest (forward to AI service)
+[ ] POST /api/mentor/profile (forward to AI service)
+[ ] POST /api/mentor/audit-code (forward to AI service)
+[ ] POST /api/mentor/generate-project (forward to AI service)
+[ ] Add rate limiting (10 req/min per user)
+
+PHASE 6: CONTENT INTELLIGENCE (Video Features)
+-------
+[ ] POST /api/analyze/video (forward to AI service)
+[ ] POST /api/analyze/quality (forward to AI service)
+[ ] POST /api/generate/quiz (forward to AI service)
+[ ] POST /api/search/semantic (forward to AI service)
+[ ] POST /api/recommend/next (forward to AI service)
+[ ] GET /api/trending (cache or call AI service)
+
+PHASE 7: BLOCKCHAIN INTEGRATION (Web3)
+-------
+[ ] Setup Camp Origin SDK
+[ ] Implement IP registration function
+[ ] Implement onchain course querying
+[ ] Setup event listeners for IP registration
+
+PHASE 8: ADMIN & UTILITIES (Developer Tools)
+-------
+[ ] GET /api/admin/stats (usage metrics)
+[ ] POST /api/admin/seed (seed sample data)
+[ ] Create database migration runner
+[ ] Create seed data script
+
+PHASE 9: TESTING & DOCUMENTATION
+-------
+[ ] Write unit tests for services
+[ ] Write integration tests for key flows
+[ ] Create Postman collection with all endpoints
+[ ] Document API with request/response examples
+
+PHASE 10: DEPLOYMENT & DevOps
+-------
+[ ] Create Dockerfile
+[ ] Create docker-compose.yml
+[ ] Deploy to Railway
+[ ] Setup monitoring & error tracking
+[ ] Configure environment variables
+
+QUICK ENDPOINT SUMMARY (Total: ~14 endpoints)
+================================================
+
+AUTH (3)
+--------
+POST /api/auth/nonce
+POST /api/auth/verify
+GET /api/me
+
+COURSES (5)
+-----------
+GET /api/courses
+GET /api/courses/:id
+POST /api/courses/upload
+POST /api/courses/publish
+GET /api/courses/onchain
+
+PROGRESS (2)
+------------
+GET /api/user/progress
+POST /api/user/progress
+
+MENTORSHIP (5) - Via AI Service Proxy
+--------------------------------------
+POST /api/mentor/explain
+POST /api/mentor/suggest
+POST /api/mentor/profile
+POST /api/mentor/audit-code
+POST /api/mentor/generate-project
+
+CONTENT (4) - Via AI Service Proxy
+----------------------------------
+POST /api/analyze/video
+POST /api/analyze/quality
+POST /api/generate/quiz
+POST /api/search/semantic
+
+RECOMMENDATIONS (2) - Via AI Service
+-----------------------------------
+POST /api/recommend/next
+GET /api/trending
+
+ADMIN (2)
+---------
+GET /api/admin/stats
+POST /api/admin/seed
+
+KEY TECH STACK
+===============
+Framework: Fastify (lightweight, fast)
+Database: PostgreSQL / Supabase
+Blockchain: Camp Origin SDK + ethers.js
+Auth: JWT + ethers.recoverAddress
+Testing: Jest + supertest
+Deployment: Railway or Docker
+
+IMPORTANT REMINDERS
+====================
+✅ AI Service is ALREADY DEPLOYED at: https://blockedlearning-production.up.railway.app
+   - Use proxy pattern to forward requests to AI endpoints
+   - All 13 endpoints tested and working
+
+🔐 Implement authentication EARLY - needed for most endpoints
+
+🗄️ Setup database FIRST - everything depends on it
+
+⚡ Use Fastify not Express - it's faster for this hackathon
+
+🔗 You are the ORCHESTRATOR between:
+   - Frontend (Next.js)
+   - Blockchain (Camp SDK)
+   - AI Service (Already running)
+
+💰 Rate limit AI endpoints to 10 req/min per user to control costs
+
+EXECUTION ORDER
+================
+1. Phase 1: Setup (Day 1)
+2. Phase 2: Auth (Day 1)
+3. Phase 3: Courses (Day 2)
+4. Phase 4: Progress (Day 2)
+5. Phase 5: AI Integration (Day 2)
+6. Phase 6: Content Features (Day 3)
+7. Phase 7: Blockchain (Day 3)
+8. Phase 8-10: Polish & Deploy (Day 3-4)
+
+Start with: npm init, npm install, create .env, setup database migrations
