@@ -1,19 +1,17 @@
 // app/courses/[id]/page.tsx
 "use client";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import useCourseStore from "@/stores/useCourseStore";
 import CourseHeader from "@/components/CourseHeader";
 import ModuleItem from "@/components/ModuleItem";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 // import LoadingSkeleton from "@/components/LoadingSkeleton";
 
-export default function CourseDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const { id } = params;
+export default function CourseDetailPage({}: {}) {
+  const params = useParams();
+  const id = params?.id as string;
   const [loading, setLoading] = useState(true);
   const course = useCourseStore((s) => s.courses.find((c) => c.id === id));
   const setCourses = useCourseStore((s) => s._seedReplace);

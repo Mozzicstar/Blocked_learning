@@ -30,4 +30,9 @@ export const api = {
   async getDashboard(wallet?: string) {
     return simulate(getDashboardSeed(wallet), 250);
   },
+  async getModule(courseId: string, moduleId: string) {
+    const data = getModuleSeed(courseId, moduleId);
+    if (!data) throw new Error("Module not found");
+    return simulate(data, 300);
+  },
 };

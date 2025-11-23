@@ -1,7 +1,7 @@
 // app/courses/[id]/module/[mid]/page.tsx
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ModulePlayer from "@/components/ModulePlayer";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import { api } from "@/lib/api";
@@ -9,12 +9,10 @@ import useCourseStore from "@/stores/useCourseStore";
 import { toast } from "sonner";
 import ProgressBar from "@/components/ProgressBar";
 
-export default function ModulePage({
-  params,
-}: {
-  params: { id: string; mid: string };
-}) {
-  const { id: courseId, mid } = params;
+export default function ModulePage({}: {}) {
+  const params = useParams();
+  const courseId = params?.id as string;
+  const mid = params?.mid as string;
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [module, setModule] = useState<any | null>(null);
