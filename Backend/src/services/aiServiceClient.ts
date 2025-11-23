@@ -102,22 +102,22 @@ export const aiServiceClient = {
   /**
    * POST /analyze/video
    */
-  analyzeVideo: async (videoId: string, title: string) => {
-    return aiServiceClient.makeRequest('/analyze/video', 'POST', { video_id: videoId, title });
+  analyzeVideo: async (video_path: string, creator_wallet: string, title: string) => {
+    return aiServiceClient.makeRequest('/analyze/video', 'POST', { video_path, creator_wallet, title });
   },
 
   /**
    * POST /analyze/quality
    */
-  analyzeQuality: async (content: string) => {
-    return aiServiceClient.makeRequest('/analyze/quality', 'POST', { content });
+  analyzeQuality: async (video_url: string, transcript: string) => {
+    return aiServiceClient.makeRequest('/analyze/quality', 'POST', { video_url, transcript });
   },
 
   /**
    * POST /generate/quiz
    */
-  generateQuiz: async (videoId: string) => {
-    return aiServiceClient.makeRequest('/generate/quiz', 'POST', { video_id: videoId });
+  generateQuiz: async (video_id: string, transcript: string) => {
+    return aiServiceClient.makeRequest('/generate/quiz', 'POST', { video_id: parseInt(video_id), transcript });
   },
 
   /**
