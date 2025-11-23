@@ -26,8 +26,8 @@ export const courseRoutes = async (app: FastifyInstance) => {
     '/api/courses',
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        const limit = Math.min(parseInt(request.query.limit || '10'), 100);
-        const offset = parseInt(request.query.offset || '0');
+        const limit = Math.min(parseInt((request.query as { limit?: string; offset?: string }).limit || '10'), 100);
+        const offset = parseInt((request.query as { limit?: string; offset?: string }).offset || '0');
 
         const { courses, total } = await courseService.getAllCourses(limit, offset);
 

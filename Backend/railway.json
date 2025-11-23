@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/railwayapp/stationery/main/schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "context": "."
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "startCommand": "node dist/server.js",
+    "restartPolicyMaxRetries": 10,
+    "restartPolicyWindowSeconds": 60,
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 10
+  }
+}
