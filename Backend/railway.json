@@ -9,7 +9,7 @@
     "startCommand": "node dist/server.js",
     "restartPolicyMaxRetries": 10,
     "restartPolicyWindowSeconds": 60,
-    "healthcheckPath": "/api/health",
+    "healthcheckPath": "/health",
     "healthcheckTimeout": 10
   }
 }

@@ -2,60 +2,66 @@
 
 ```
 Frontend/
-├── pages/
-│   ├── index.tsx                    # Landing page
-│   ├── dashboard.tsx                # Learner dashboard (progress, recommendations)
-│   ├── courses/
-│   │   ├── index.tsx                # Marketplace (list & filters)
-│   │   └── [id].tsx                 # Course viewer (modules, player, mark complete)
-│   ├── creator/
-│   │   ├── upload.tsx               # Creator upload form
-│   │   └── my-courses.tsx           # Creator dashboard & IP status
-│   ├── trending.tsx                 # Trending topics list
-│   ├── _app.tsx                     # Global setup (providers, theme)
-│   ├── _document.tsx                # Document wrapper
-│   └── 404.tsx                      # Not found
+├── app/                             # Next.js 13+ app directory
+│   ├── page.tsx                     # Landing page
+│   ├── layout.tsx                   # Root layout with providers
+│   ├── globals.css                  # Global styles
+│   └── (routes)/
+│       ├── dashboard/
+│       │   └── page.tsx             # Learner dashboard
+│       ├── courses/
+│       │   ├── page.tsx             # Course marketplace
+│       │   └── [id]/
+│       │       └── page.tsx         # Course viewer
+│       ├── creator/
+│       │   ├── upload/
+│       │   │   └── page.tsx         # Upload course
+│       │   └── my-courses/
+│       │       └── page.tsx         # Creator dashboard
+│       ├── trending/
+│       │   └── page.tsx             # Trending topics
+│       └── admin/
+│           └── page.tsx             # Admin dashboard (stats, users)
 │
 ├── components/
-│   ├── WalletConnectButton.tsx      # Wallet connection UI
-│   ├── CourseCard.tsx               # Course card (title, creator, tags, CTA)
-│   ├── CoursePlayer.tsx             # Video/PDF player + fallback download
+│   ├── WalletConnect.tsx            # Wallet connection
+│   ├── CourseCard.tsx               # Course display card
+│   ├── ModulePlayer.tsx             # Video/content player
 │   ├── ProgressBar.tsx              # Progress indicator
-│   ├── Badge.tsx                    # Achievement badge
-│   ├── UploadForm.tsx               # Course upload form
-│   ├── MentorPanel.tsx              # CheckMate mentor UI
+│   ├── MentorPanel.tsx              # CheckMate AI mentor
+│   ├── SearchBar.tsx                # Semantic search
 │   ├── TrendingCard.tsx             # Trending topic card
-│   ├── TrendingList.tsx             # Trending topics list
-│   ├── Toast.tsx                    # Toast notifications
-│   ├── Modal.tsx                    # Modal wrapper
-│   ├── Navigation.tsx               # Nav bar / header
-│   └── Footer.tsx                   # Footer
+│   ├── Navbar.tsx                   # Navigation header
+│   ├── AdminStats.tsx               # Admin statistics display
+│   └── ui/                          # shadcn/ui components
+│       ├── button.tsx
+│       ├── dialog.tsx
+│       ├── table.tsx
+│       └── ...
 │
 ├── lib/
-│   ├── api.ts                       # Axios instance + API call functions
-│   ├── web3.ts                      # Wallet utilities (connect, sign, recover)
-│   ├── constants.ts                 # API URLs, contract addresses
-│   └── types.ts                     # TypeScript interfaces
+│   ├── api.backend.ts               # Backend API calls
+│   ├── api.ts                       # General API utilities
+│   ├── wallet.tsx                   # Wallet integration
+│   ├── utils.ts                     # Helper functions
+│   └── client.ts                    # HTTP client setup
 │
-├── state/
-│   ├── store.ts                     # Zustand store (user, courses, progress)
-│   └── hooks.ts                     # Custom hooks to access store
+├── stores/
+│   ├── useUserStore.ts              # User state (auth, profile)
+│   └── useCourseStore.ts            # Course data state
 │
-├── styles/
-│   ├── globals.css                  # TailwindCSS + global styles
-│   └── Home.module.css              # Page-specific styles (optional)
+├── types/
+│   └── index.d.ts                   # TypeScript definitions
 │
 ├── public/
-│   ├── favicon.ico
-│   └── (static assets)
+│   └── fonts/                       # Custom fonts
 │
-├── .env.local                       # Local env vars (git-ignored)
+├── .env.local                       # Environment variables
 ├── package.json
 ├── tsconfig.json
+├── next.config.ts
 ├── tailwind.config.js
-├── next.config.js
-├── README.md
-└── .gitignore
+└── README.md
 ```
 
 ## Key Folders Explained
