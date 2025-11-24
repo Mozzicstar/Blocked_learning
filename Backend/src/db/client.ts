@@ -1,12 +1,26 @@
-import Database from 'better-sqlite3';
+import pg from 'pg';
 import path from 'path';
+import Database from 'better-sqlite3';
 
-// Create database in /tmp for dev environment
-const dbPath = process.env.DATABASE_URL || path.join('/tmp', 'blockedlearning.db');
-export const sqlite: any = new Database(dbPath);
+const { Pool } = pg;
 
-// Enable foreign keys
-sqlite.pragma('foreign_keys = ON');
+// Determine database type and create pool
+let pool: any;
+let sqlite: any = null;
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL?.includes('postgresql');
+
+if (isProduction || process.env.DATABASE_URL?.includes('postgresql')) {
+  // Use PostgreSQL in production
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  });
+} else {
+  // Use SQLite in development
+  const dbPath = process.env.DATABASE_URL || path.join('/tmp', 'blockedlearning.db');
+  sqlite = new Database(dbPath);
+  sqlite.pragma('foreign_keys = ON');
+}
 
 interface QueryResult {
   rows: any[];
@@ -14,41 +28,44 @@ interface QueryResult {
 }
 
 /**
- * Mock pg Pool interface for compatibility
+ * Database client that works with both PostgreSQL and SQLite
  */
 export const db = {
   query: async (sql: string, params?: any[]): Promise<QueryResult> => {
     try {
-      // Remove trailing semicolon if present
-      sql = sql.trim().replace(/;+$/, '');
+      if (pool) {
+        // PostgreSQL
+        const result = await pool.query(sql, params);
+        return { rows: result.rows, rowCount: result.rowCount || 0 };
+      } else if (sqlite) {
+        // SQLite
+        sql = sql.trim().replace(/;+$/, '');
+        sql = sql.replace(/\$\d+/g, () => '?');
 
-      // Convert PostgreSQL-style $1, $2 to SQLite-style ?
-      sql = sql.replace(/\$\d+/g, () => '?');
-
-      if (sql.toUpperCase().startsWith('SELECT')) {
-        const stmt = sqlite.prepare(sql);
-        const rows = stmt.all(...(params || [])) as any[];
-        return { rows, rowCount: rows.length };
-      } else if (sql.toUpperCase().includes('RETURNING')) {
-        // Handle INSERT/UPDATE with RETURNING clause
-        const stmt = sqlite.prepare(sql);
-        const result = stmt.run(...(params || []));
-        
-        // For RETURNING, fetch the last inserted row
-        const selectSql = sql.substring(0, sql.toUpperCase().indexOf('RETURNING')).trim();
-        const table = selectSql.match(/INTO\s+(\w+)/i)?.[1] || selectSql.match(/UPDATE\s+(\w+)/i)?.[1];
-        
-        if (table && result.lastInsertRowid) {
-          const fetchStmt = sqlite.prepare(`SELECT * FROM ${table} WHERE id = ?`);
-          const rows = fetchStmt.all(result.lastInsertRowid) as any[];
-          return { rows, rowCount: result.changes };
+        if (sql.toUpperCase().startsWith('SELECT')) {
+          const stmt = sqlite.prepare(sql);
+          const rows = stmt.all(...(params || [])) as any[];
+          return { rows, rowCount: rows.length };
+        } else if (sql.toUpperCase().includes('RETURNING')) {
+          const stmt = sqlite.prepare(sql);
+          const result = stmt.run(...(params || []));
+          
+          const selectSql = sql.substring(0, sql.toUpperCase().indexOf('RETURNING')).trim();
+          const table = selectSql.match(/INTO\s+(\w+)/i)?.[1] || selectSql.match(/UPDATE\s+(\w+)/i)?.[1];
+          
+          if (table && result.lastInsertRowid) {
+            const fetchStmt = sqlite.prepare(`SELECT * FROM ${table} WHERE id = ?`);
+            const rows = fetchStmt.all(result.lastInsertRowid) as any[];
+            return { rows, rowCount: result.changes };
+          }
+          return { rows: [], rowCount: result.changes };
+        } else {
+          const stmt = sqlite.prepare(sql);
+          const result = stmt.run(...(params || []));
+          return { rows: [], rowCount: result.changes };
         }
-        return { rows: [], rowCount: result.changes };
-      } else {
-        const stmt = sqlite.prepare(sql);
-        const result = stmt.run(...(params || []));
-        return { rows: [], rowCount: result.changes };
       }
+      return { rows: [], rowCount: 0 };
     } catch (error) {
       console.error('Database query error:', error, 'SQL:', sql, 'Params:', params);
       throw error;
