@@ -1,4 +1,5 @@
 // lib/api.mock.ts
+import useSearchStore from "@/stores/useSearchStore";
 import { client } from "./client";
 import {
   getCoursesSeed,
@@ -8,6 +9,8 @@ import {
   getTrendingSeed,
   getModuleSeed,
 } from "@/stores/useCourseStore";
+import { getCategories } from "@/stores/useCategoryStore";
+import useUserStore from "@/stores/useUserStore";
 
 const simulate = <T>(value: T, ms = 300): Promise<T> =>
   new Promise((res) => setTimeout(() => res(value), ms));
@@ -34,5 +37,38 @@ export const api = {
     const data = getModuleSeed(courseId, moduleId);
     if (!data) throw new Error("Module not found");
     return simulate(data, 300);
+  },
+  async getCategories() {
+    const categories = getCategories();
+    return { data: simulate(categories, 400) };
+  },
+
+  // -----------------------------
+  // SEARCH
+  // -----------------------------
+  async searchCourses(query: string, filters: SearchFilters) {
+    const searchStore = useSearchStore.getState();
+    searchStore.setQuery(query);
+    searchStore.setFilters(filters);
+    searchStore.runSearch();
+
+    return { data: simulate(searchStore.results, 500) };
+  },
+  async getUser() {
+    const user = useUserStore.getState().user;
+    return { data: simulate(user, 100) };
+  },
+
+  async updateUserPreferences(prefs: string[]) {
+    useUserStore.getState().updatePreferences(prefs);
+    return { data: prefs };
+  },
+
+  // -----------------------------
+  // RECOMMENDED
+  // -----------------------------
+  async getRecommended() {
+    const recommended = useUserStore.getState().recommended;
+    return { data: recommended };
   },
 };
