@@ -23,10 +23,10 @@ export default function SearchBar() {
   const categories = useCategoryStore((s) => s.categories);
 
   const [localQuery, setLocalQuery] = useState("");
-  const [category, setCategory] = useState<string | undefined>(undefined);
+  const [category, setCategory] = useState<string>("");
   const [difficulty, setDifficulty] = useState<
-    "Beginner" | "Intermediate" | "Advanced" | undefined
-  >(undefined);
+    "Beginner" | "Intermediate" | "Advanced"
+  >("Beginner");
 
   // debounce localQuery -> global
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function SearchBar() {
       </div>
 
       <div className="flex gap-2">
-        <Select onValueChange={(v) => setCategory(v || undefined)}>
+        <Select onValueChange={(v) => setCategory(v ?? "Category")}>
           <SelectTrigger
             className="w-48"
             style={{ borderColor: "var(--border)" }}
@@ -81,7 +81,7 @@ export default function SearchBar() {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             {categories.map((c) => (
               <SelectItem key={c.id} value={c.name}>
                 {c.name}
@@ -92,7 +92,7 @@ export default function SearchBar() {
 
         <Select
           onValueChange={(v) =>
-            setDifficulty((v as SearchFilters["difficulty"]) || undefined)
+            setDifficulty((v as SearchFilters["difficulty"]) ?? "Beginner")
           }
         >
           <SelectTrigger
@@ -102,7 +102,7 @@ export default function SearchBar() {
             <SelectValue placeholder="Difficulty" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any</SelectItem>
+            {/* <SelectItem value="">Any</SelectItem> */}
             <SelectItem value="Beginner">Beginner</SelectItem>
             <SelectItem value="Intermediate">Intermediate</SelectItem>
             <SelectItem value="Advanced">Advanced</SelectItem>

@@ -2,7 +2,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
 import Navbar from "@/components/Navbar";
-import WalletProvider from "@/lib/wallet";
+// import WalletProvider from "@/lib/wallet";
 
 const monaSans = localFont({
   src: [
@@ -38,11 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={monaSans.variable}>
       <body className="bg-gray-50">
-        <WalletProvider>
-          <Navbar />
-          <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
-          <Toaster richColors closeButton />
-        </WalletProvider>
+        {/* <WalletProvider> */}
+        <Navbar />
+        <main className="max-w-6xl mx-auto px-4 py-8">{children}</main>
+        <Toaster richColors closeButton />
+        {/* </WalletProvider> */}
       </body>
     </html>
   );

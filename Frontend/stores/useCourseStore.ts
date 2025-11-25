@@ -1,111 +1,154 @@
-// stores/useCourseStore.ts
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
-/**
- * Option A mock store: contains seeded courses + helpers used by lib/api.ts
- * This file both exports the hook and the helper functions used by lib/api to read/mutate seed data
- */
+// --- TYPE DEFINITIONS (Assuming these are global/in a types file) ---
+// Note: Since the full types (Course, Module, Dashboard) were not provided,
+// I'm using 'any' placeholders for simplicity, but in a real app, they should be defined.
+// type Course = any;
+// type Module = any;
+// type Dashboard = any;
 
-// Types
-
-type CourseState = {
-  courses: Course[];
-  // actions for dev mode
-  _seedReplace?: (courses: Course[]) => void;
-  completeModule: (moduleId: string) => { success: boolean; moduleId: string };
-};
-
-const sampleCourses: Course[] = [
+// --- INITIAL SAMPLE DATA (25 Courses) ---
+const baseCourseModules: Omit<Module, "id">[] = [
   {
-    id: "course-1",
-    title: "Intro to Web3 Fundamentals",
-    description:
-      "A gentle intro to blockchain concepts, wallets, and how to build on testnets.",
-    creator: "TechyJaunt",
-    thumbnail: "",
-    tags: ["web3", "blockchain", "beginner"],
-    difficulty: "Beginner",
-    createdAt: new Date().toISOString(),
-    modules: [
-      {
-        id: "c1-m1",
-        title: "What is Blockchain?",
-        type: "text",
-        content:
-          "Blockchains are distributed ledgers... (mock content). Read more: https://example.com",
-        duration: "6m",
-        completed: false,
-      },
-      {
-        id: "c1-m2",
-        title: "Wallets & Addresses",
-        type: "video",
-        content: "https://www.w3schools.com/html/mov_bbb.mp4", // sample video
-        duration: "8m",
-        completed: false,
-      },
-      {
-        id: "c1-m3",
-        title: "Smart Contracts Overview",
-        type: "text",
-        content:
-          "Smart contracts are programs that run on blockchain networks...",
-        duration: "10m",
-        completed: false,
-      },
-    ],
+    title: "Introduction",
+    type: "text",
+    content: "Welcome to the module.",
+    duration: "5m",
+    completed: false,
   },
   {
-    id: "course-2",
-    title: "React for Blockchain Interfaces",
-    description:
-      "How to build React frontends that interact with wallets and contracts.",
-    creator: "BlockedLearning",
-    thumbnail: "",
-    tags: ["react", "frontend"],
-    difficulty: "Intermediate",
-    createdAt: new Date().toISOString(),
-    modules: [
-      {
-        id: "c2-m1",
-        title: "Connecting a Wallet with Web3Modal",
-        type: "text",
-        content:
-          "How to integrate Web3Modal and ask the user to sign a message... (mock)",
-        duration: "7m",
-        completed: false,
-      },
-      {
-        id: "c2-m2",
-        title: "Displaying On-chain Data in React",
-        type: "video",
-        content: "https://www.w3schools.com/html/mov_bbb.mp4",
-        duration: "12m",
-        completed: false,
-      },
-    ],
+    title: "Core Concepts",
+    type: "video",
+    content: "https://www.w3schools.com/html/mov_bbb.mp4",
+    duration: "10m",
+    completed: false,
+  },
+  {
+    title: "Advanced Topics",
+    type: "text",
+    content: "Deeper dive into the subject.",
+    duration: "15m",
+    completed: false,
+  },
+  {
+    title: "Final Assessment",
+    type: "text",
+    content: "Quiz time!",
+    duration: "7m",
+    completed: false,
   },
 ];
 
-const useCourseStore = create<CourseState>((set, get) => ({
-  courses: sampleCourses,
-  _seedReplace: (courses) => set({ courses }),
-  completeModule: (moduleId: string) => {
-    const courses = get().courses.map((c) => {
-      return {
-        ...c,
-        modules: c.modules.map((m) =>
-          m.id === moduleId ? { ...m, completed: true } : m
-        ),
-      };
-    });
-    set({ courses });
-    return { success: true, moduleId };
-  },
-}));
+const generateCourse = (
+  index: number,
+  titleBase: string,
+  tag: string,
+  difficulty: Course["difficulty"]
+): Course => ({
+  id: `course-${index}`,
+  title: `${titleBase} #${index}`,
+  description: `A comprehensive course on ${titleBase.toLowerCase()} covering everything from basics to advanced applications.`,
+  creator: `CreatorBot ${index % 5}`,
+  thumbnail: `https://placehold.co/100x100/314151/FFFFFF?text=${tag}`,
+  tags: [tag.toLowerCase(), "tutorial", difficulty.toLowerCase()],
+  difficulty: difficulty,
+  createdAt: new Date(Date.now() - index * 86400000).toISOString(), // Spread out creation dates
+  modules: baseCourseModules.map((m, i) => ({
+    ...m,
+    id: `c${index}-m${i}`,
+    title: `${m.title} - ${titleBase}`,
+  })),
+});
 
-// Helper functions consumed by lib/api.ts
+const sampleCourses: Course[] = [
+  // 5 courses from each category
+  generateCourse(1, "Web3 Fundamentals", "Web3", "Beginner"),
+  generateCourse(2, "Solidity Basics", "Solidity", "Intermediate"),
+  generateCourse(3, "Decentralized Finance (DeFi)", "DeFi", "Advanced"),
+  generateCourse(4, "NFT Marketplace Design", "NFT", "Intermediate"),
+  generateCourse(5, "Layer 2 Solutions", "Scaling", "Advanced"),
+
+  generateCourse(6, "React Hooks Masterclass", "React", "Intermediate"),
+  generateCourse(7, "Next.js App Router", "NextJS", "Advanced"),
+  generateCourse(8, "TypeScript in Practice", "TypeScript", "Intermediate"),
+  generateCourse(9, "CSS Grid & Flexbox", "Frontend", "Beginner"),
+  generateCourse(10, "Zustand State Management", "State", "Beginner"),
+
+  generateCourse(11, "Advanced Machine Learning", "AI", "Advanced"),
+  generateCourse(12, "Python Data Science", "Python", "Intermediate"),
+  generateCourse(13, "Introduction to Algorithms", "CS", "Beginner"),
+  generateCourse(14, "Cloud Computing with AWS", "Cloud", "Intermediate"),
+  generateCourse(15, "Database Design (SQL/NoSQL)", "Data", "Advanced"),
+
+  generateCourse(
+    16,
+    "Mobile App Development (React Native)",
+    "Mobile",
+    "Intermediate"
+  ),
+  generateCourse(17, "Game Development Basics (JS)", "Gaming", "Beginner"),
+  generateCourse(18, "Cybersecurity Essentials", "Security", "Beginner"),
+  generateCourse(19, "Ethical Hacking Workshop", "Security", "Advanced"),
+  generateCourse(20, "DevOps with Docker and K8s", "DevOps", "Advanced"),
+
+  generateCourse(
+    21,
+    "Technical Writing for Engineers",
+    "SoftSkills",
+    "Beginner"
+  ),
+  generateCourse(22, "Product Management 101", "PM", "Intermediate"),
+  generateCourse(23, "UI/UX Design Principles", "Design", "Beginner"),
+  generateCourse(24, "Financial Modeling", "Finance", "Advanced"),
+  generateCourse(25, "Leadership and Teams", "Management", "Intermediate"),
+];
+
+// --- STORE DEFINITION ---
+type CourseState = {
+  courses: Course[];
+  completeModule: (moduleId: string) => { success: boolean; moduleId: string };
+};
+
+const useCourseStore = create<CourseState>()(
+  // Use the persist middleware to save and rehydrate the state
+  persist(
+    (set, get) => ({
+      // 1. INITIAL STATE: Use the sample courses only on first load
+      courses: sampleCourses,
+
+      // 2. ACTION: Mark a module as complete
+      completeModule: (moduleId: string) => {
+        const courses = get().courses.map((c) => {
+          return {
+            ...c,
+            modules: c.modules.map((m) =>
+              m.id === moduleId ? { ...m, completed: true } : m
+            ),
+          };
+        });
+        set({ courses });
+        return { success: true, moduleId };
+      },
+    }),
+    {
+      name: "course-storage", // required: unique name for the storage key
+      // 3. SEEDING: We use a custom property to ensure initial data seeding
+      // only happens once when the store is created in storage, not on rehydration.
+      // We explicitly whitelist 'courses' to be persisted.
+      partialize: (state) => ({ courses: state.courses }),
+      // The default storage (localStorage) will be used here.
+      // If you are using a non-browser environment (like server/node),
+      // you must provide a custom storage implementation.
+    }
+  )
+);
+
+// --- HELPER FUNCTIONS (API SEEDING) ---
+
+// Helper function to initialize the store if it's empty in storage (redundant due to 'persist' default)
+// For demonstration, we keep the original helper logic.
 export function getCoursesSeed() {
   return useCourseStore.getState().courses;
 }

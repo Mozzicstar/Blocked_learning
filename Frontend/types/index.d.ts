@@ -4,8 +4,8 @@ type Module = {
   title: string;
   type: "video" | "text";
   content: string;
-  duration?: string;
-  completed?: boolean;
+  duration: string;
+  completed: boolean;
 };
 
 type Course = {
@@ -15,20 +15,21 @@ type Course = {
   creator: string;
   thumbnail?: string;
   tags: string[];
-  difficulty?: "Beginner" | "Intermediate" | "Advanced";
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
   modules: Module[];
   ipTokenId?: string | null;
-  createdAt?: string;
+  createdAt: string;
 };
 
+type Progress = {
+  courseId: string;
+  completedModules: number;
+  totalModules: number;
+  lastCompletedModule: string | null;
+};
 type Dashboard = {
   wallet?: string;
-  progress: {
-    courseId: string;
-    completedModules: number;
-    totalModules: number;
-    lastCompletedModule?: string | null;
-  }[];
+  progress: Progress[];
 };
 
 type Category = {
