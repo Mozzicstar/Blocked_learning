@@ -9,7 +9,7 @@ type Props = {
 export default function ProgressBar({ value, className = "" }: Props) {
   return (
     <div
-      className={`w-full bg-slate-100 rounded h-3 overflow-hidden ${className}`}
+      className={`w-full bg-accent-lime-500 rounded h-3 overflow-hidden ${className}`}
     >
       <div
         className="h-full bg-emerald-500 transition-all"

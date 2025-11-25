@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import useCourseStore from "@/stores/useCourseStore";
 import { toast } from "sonner";
 import ProgressBar from "@/components/ProgressBar";
+import { Button } from "@/components/ui/button";
 
 export default function ModulePage({}: {}) {
   const params = useParams();
@@ -83,23 +84,18 @@ export default function ModulePage({}: {}) {
 
       <ModulePlayer type={module.type} content={module.content} />
 
-      <div className="mt-4 flex items-center gap-3">
-        <button
-          className="px-3 py-2 rounded bg-emerald-600 text-white"
-          onClick={handleComplete}
-        >
-          Mark as completed
-        </button>
+      <div className="mt-4 flex items-center gap-3 justify-between w-full mt-auto">
+        <Button onClick={handleComplete}>Mark as completed</Button>
 
         {nextModule ? (
-          <button
-            className="px-3 py-2 rounded border"
+          <Button
+            variant={"outline"}
             onClick={() =>
               router.push(`/courses/${courseId}/module/${nextModule.id}`)
             }
           >
             Next module → {nextModule.title}
-          </button>
+          </Button>
         ) : (
           <div className="text-sm text-gray-500">This is the last module.</div>
         )}
