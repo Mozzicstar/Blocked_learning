@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { courseService } from '../services/courseService.js';
+import { ipRegistryService, blockchainUtils } from '../services/blockchainService.js';
 
 interface UploadCourseBody {
   title: string;
@@ -141,8 +142,8 @@ export const courseRoutes = async (app: FastifyInstance) => {
 
   /**
    * POST /api/courses/publish
-   * Publish course on blockchain (⚠️ TODO LATER - Needs blockchain guy)
-   * Requires: ipTokenId, metadataHash from blockchain registration
+   * Publish course on blockchain using IPRegistry contract
+   * Can either accept pre-registered blockchain data OR register on-chain
    */
   app.post<{ Body: PublishCourseBody }>(
     '/api/courses/publish',
@@ -150,20 +151,63 @@ export const courseRoutes = async (app: FastifyInstance) => {
       try {
         const { courseId, ipTokenId, metadataHash, txHash } = request.body;
 
-        if (!courseId || !ipTokenId || !metadataHash) {
+        if (!courseId) {
           return reply.status(400).send({
             statusCode: 400,
-            message: 'Missing required fields: courseId, ipTokenId, metadataHash'
+            message: 'Missing required field: courseId'
           });
         }
 
-        // TODO: In Phase 7, integrate blockchain guy's registerIP() function here
-        // For now, just update the course with the provided blockchain data
+        // If blockchain data is provided, just update DB
+        // Otherwise, attempt to register on-chain
+        let finalIpTokenId = ipTokenId;
+        let finalTxHash = txHash;
+        let finalMetadataHash = metadataHash;
+
+        if (!ipTokenId && blockchainUtils.isConfigured()) {
+          // Get course from DB to get metadata for blockchain registration
+          const courseData = await courseService.getCourseById(courseId);
+          if (!courseData) {
+            return reply.status(404).send({
+              statusCode: 404,
+              message: 'Course not found'
+            });
+          }
+
+          // Use file_cid as metadata hash for on-chain registration
+          const onchainMetadataHash = courseData.course.file_cid;
+          const tags = courseData.course.tags || [];
+          const royaltyBps = 500; // 5% default royalty
+
+          try {
+            const result = await ipRegistryService.registerCourse(
+              onchainMetadataHash,
+              tags,
+              royaltyBps
+            );
+            finalIpTokenId = result.courseId.toString();
+            finalTxHash = result.txHash;
+            finalMetadataHash = onchainMetadataHash;
+          } catch (blockchainError: any) {
+            app.log.error('Blockchain registration failed:', blockchainError);
+            return reply.status(500).send({
+              statusCode: 500,
+              message: `Blockchain registration failed: ${blockchainError.message}`
+            });
+          }
+        } else if (!ipTokenId) {
+          return reply.status(400).send({
+            statusCode: 400,
+            message: 'Blockchain not configured. Please provide ipTokenId, metadataHash, txHash manually.'
+          });
+        }
+
+        // Update course in DB with blockchain data
         const publishedCourse = await courseService.publishCourse(
           courseId,
-          ipTokenId,
-          metadataHash,
-          txHash
+          finalIpTokenId!,
+          finalMetadataHash!,
+          finalTxHash!
         );
 
         return reply.status(200).send({
@@ -171,8 +215,9 @@ export const courseRoutes = async (app: FastifyInstance) => {
           message: 'Course published successfully',
           data: {
             course: publishedCourse,
-            ipTokenId,
-            txHash
+            ipTokenId: finalIpTokenId,
+            txHash: finalTxHash,
+            onChain: blockchainUtils.isConfigured()
           }
         });
       } catch (error) {
@@ -187,20 +232,48 @@ export const courseRoutes = async (app: FastifyInstance) => {
 
   /**
    * GET /api/courses/onchain
-   * Get only published courses with IP tokens (⚠️ TODO LATER - Needs blockchain guy)
+   * Get published courses - combines DB data with on-chain data when available
    */
   app.get(
     '/api/courses/onchain',
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
-        // TODO: In Phase 7, integrate blockchain guy's read functions
-        // For now, return courses from DB that have ip_token_id
-        const courses = await courseService.getOnchainCourses();
+        // Get courses from DB that have ip_token_id
+        const dbCourses = await courseService.getOnchainCourses();
+
+        // If blockchain is configured, enrich with on-chain data
+        let enrichedCourses = dbCourses;
+        if (blockchainUtils.isConfigured()) {
+          enrichedCourses = await Promise.all(
+            dbCourses.map(async (course) => {
+              if (course.ip_token_id) {
+                try {
+                  const onchainCourse = await ipRegistryService.getCourse(
+                    parseInt(course.ip_token_id)
+                  );
+                  return {
+                    ...course,
+                    onchain: {
+                      creator: onchainCourse.creator,
+                      timestamp: onchainCourse.timestamp.toString(),
+                      isActive: onchainCourse.isActive,
+                      royaltyBps: onchainCourse.royaltyBps.toString(),
+                    },
+                  };
+                } catch {
+                  // On-chain data not available
+                  return course;
+                }
+              }
+              return course;
+            })
+          );
+        }
 
         return reply.status(200).send({
           statusCode: 200,
-          data: courses,
-          message: 'Note: These courses have blockchain registration data in DB'
+          data: enrichedCourses,
+          blockchainConnected: blockchainUtils.isConfigured()
         });
       } catch (error) {
         app.log.error(error);

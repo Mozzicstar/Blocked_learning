@@ -7,6 +7,7 @@ import { progressRoutes } from './routes/progress.js';
 import { mentorRoutes } from './routes/mentor.js';
 import { contentRoutes } from './routes/content.js';
 import { adminRoutes } from './routes/admin.js';
+import { blockchainRoutes } from './routes/blockchain.js';
 
 const app = Fastify({
   logger: {
@@ -39,6 +40,7 @@ app.register(progressRoutes);
 app.register(mentorRoutes);
 app.register(contentRoutes);
 app.register(adminRoutes);
+app.register(blockchainRoutes);
 
 // Health check endpoint
 app.get('/health', async () => {
