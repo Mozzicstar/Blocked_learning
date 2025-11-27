@@ -1,0 +1,23 @@
+cat > .gitignore << 'EOF'
+# Foundry
+cache/
+out/
+broadcast/
+
+# Dependencies - we track submodules, not their contents
+lib/forge-std/*
+lib/openzeppelin-contracts/*
+
+# Keep submodule markers
+!lib/forge-std/.git
+!lib/openzeppelin-contracts/.git
+
+# Node
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+EOF

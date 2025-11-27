@@ -1,75 +1,114 @@
-# Blockchain (Smart Contracts) Setup & Development
+## Foundry
 
-Welcome, Blockchain Developer! This folder contains the BLOCKEDLEARNING smart contracts and on-chain integration.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-## Quick Reference
+Foundry consists of:
 
-- **Design Doc:** See `docs/DESIGN.md` for full specifications
-- **Tech Stack:** Camp Origin SDK, Solidity, Hardhat, ethers.js
-- **Testnet:** Camp Basecamp
-- **Start Development:** `npm run compile && npm run test`
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-## Prerequisites
+## Documentation
 
-- Node.js 18+
-- Wallet with Camp testnet tokens
-- Camp SDK key
-- Note: AI service is pre-deployed at `https://blockedlearning-production.up.railway.app` ✅
+https://paritytech.github.io/foundry-book-polkadot/
 
-## Installation
+## Usage
 
-```bash
-cd contracts
-npm install
+### Build
+
+```shell
+$ forge build
 ```
 
-## Environment Setup
+### Test
 
-Create `.env`:
+```shell
+$ forge test
+```
 
-```env
+### Format
+
+```shell
+$ forge fmt
+```
+
+### Gas Snapshots
+
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
+
+
+Blockchain (Smart Contracts) Setup & Development
+Welcome, Blockchain Developer! This folder contains the BLOCKEDLEARNING smart contracts and on-chain integration.
+
+Quick Reference
+Design Doc: See docs/DESIGN.md for full specifications
+Tech Stack: Camp Origin SDK, Solidity, Hardhat, ethers.js
+Testnet: Camp Basecamp
+Start Development: npm run compile && npm run test
+Prerequisites
+Node.js 18+
+Wallet with Camp testnet tokens
+Camp SDK key
+Note: AI service is pre-deployed at https://blockedlearning-production.up.railway.app ✅
+Installation
+cd contracts
+npm install
+Environment Setup
+Create .env:
+
 PRIVATE_KEY=your_wallet_private_key
 CAMP_TESTNET_RPC=https://basecamp.camp/rpc
 CAMP_SDK_KEY=your_camp_sdk_key
-```
-
-## AI Service Status
-
-✅ **Deployed & Running** at `https://blockedlearning-production.up.railway.app`
+AI Service Status
+✅ Deployed & Running at https://blockedlearning-production.up.railway.app
 
 The BLOCKEDLEARNING AI service (CheckMate) is already deployed on Railway. It provides:
-- Learning mentor with personalized explanations and recommendations
-- Content intelligence (video analysis, quiz generation, quality scoring)
-- Industry trend analysis and career insights
-- 13 total endpoints, all tested and working
 
+Learning mentor with personalized explanations and recommendations
+Content intelligence (video analysis, quiz generation, quality scoring)
+Industry trend analysis and career insights
+13 total endpoints, all tested and working
 No blockchain integration needed for AI service—it operates independently. Backend will proxy requests from frontend to the AI service.
 
-## Quick Start
-
-### Compile Contracts
-
-```bash
+Quick Start
+Compile Contracts
 npm run compile
-```
-
-### Run Tests
-
-```bash
+Run Tests
 npm run test
-```
-
-### Deploy to Testnet
-
-```bash
+Deploy to Testnet
 npm run deploy:testnet
-```
-
 Output will include deployed contract addresses and ABI.
 
-## Project Structure
-
-```
+Project Structure
 contracts/
 ├── contracts/
 │   ├── IPRegistry.sol      # Course IP registration
@@ -85,17 +124,12 @@ contracts/
 │   └── ...
 ├── hardhat.config.js       # Hardhat configuration
 └── contracts.json          # Deployed contract addresses
-```
-
-## Core Contracts
-
-### IPRegistry.sol
-
+Core Contracts
+IPRegistry.sol
 Handles IP registration and metadata storage.
 
-**Key Functions:**
+Key Functions:
 
-```solidity
 // Register a new course
 function registerCourse(string calldata metadataHash) external returns (uint256);
 
@@ -107,35 +141,22 @@ function getCreatorCourses(address creator) public view returns (uint256[] memor
 
 // Events
 event CourseRegistered(address indexed creator, uint256 indexed ipId, string metadataHash);
-```
+Deploy:
 
-**Deploy:**
-
-```bash
 npm run deploy:testnet
-```
-
-### CourseDirectory.sol (Optional)
-
+CourseDirectory.sol (Optional)
 Read-only registry for efficient marketplace queries.
 
-## Integration with Backend
-
-### 1. Get Contract Addresses & ABI
-
+Integration with Backend
+1. Get Contract Addresses & ABI
 After deployment, export to backend:
 
-```bash
 npm run export-contracts
-```
+This creates contracts.json with addresses and ABIs.
 
-This creates `contracts.json` with addresses and ABIs.
-
-### 2. Backend Integration
-
+2. Backend Integration
 Backend calls Origin SDK to register IP:
 
-```typescript
 // In backend /services/blockchain.ts
 import { originSDK } from '@camp/sdk';
 
@@ -147,13 +168,9 @@ async function registerCourse(metadata) {
     metadataHash: tx.metadataHash,
   };
 }
-```
-
-### 3. Frontend Integration
-
+3. Frontend Integration
 Frontend reads on-chain data for verification:
 
-```typescript
 // In frontend lib/web3.ts
 import { ethers } from 'ethers';
 import IPRegistryABI from '@/contracts/IPRegistry.json';
@@ -163,38 +180,21 @@ async function getCoursesOnchain() {
   const registry = new ethers.Contract(REGISTRY_ADDRESS, IPRegistryABI, provider);
   return registry.getCourses();
 }
-```
-
-## Deployment Workflow
-
-### Step 1: Local Testing
-
-```bash
+Deployment Workflow
+Step 1: Local Testing
 npm run test
-```
-
-### Step 2: Deploy to Testnet
-
-```bash
+Step 2: Deploy to Testnet
 npm run deploy:testnet
-```
-
 Captures:
-- Contract address
-- Deployment tx hash
-- Block number
 
-### Step 3: Verify on Explorer
-
-```bash
+Contract address
+Deployment tx hash
+Block number
+Step 3: Verify on Explorer
 npx hardhat verify --network basecamp CONTRACT_ADDRESS "constructor args"
-```
+Step 4: Export ABIs & Addresses
+Update contracts.json and share with backend/frontend:
 
-### Step 4: Export ABIs & Addresses
-
-Update `contracts.json` and share with backend/frontend:
-
-```json
 {
   "IPRegistry": {
     "address": "0x...",
@@ -203,55 +203,26 @@ Update `contracts.json` and share with backend/frontend:
     "deploymentBlock": 12345
   }
 }
-```
-
-## Scripts
-
-### Deploy
-
-```bash
+Scripts
+Deploy
 npm run deploy:testnet
-```
-
-### Register a Course (Example)
-
-```bash
+Register a Course (Example)
 npm run script scripts/registerCourse.js
-```
-
-### Get Contract Info
-
-```bash
+Get Contract Info
 npm run info
-```
-
-## Testing
-
-### Unit Tests
-
-```bash
+Testing
+Unit Tests
 npm run test
-```
-
-### Integration Tests (with testnet)
-
-```bash
+Integration Tests (with testnet)
 npm run test:integration
-```
-
-## Security Considerations
-
-- ✅ Minimize on-chain writes (only essential metadata)
-- ✅ Use off-chain storage (IPFS) for large files
-- ✅ Verify creator signature on registration
-- ✅ Event indexing for off-chain updates
-- ⚠️ Audit contracts before mainnet (if applicable)
-
-## Camp Origin SDK
-
-### Usage Example
-
-```typescript
+Security Considerations
+✅ Minimize on-chain writes (only essential metadata)
+✅ Use off-chain storage (IPFS) for large files
+✅ Verify creator signature on registration
+✅ Event indexing for off-chain updates
+⚠️ Audit contracts before mainnet (if applicable)
+Camp Origin SDK
+Usage Example
 import { originSDK } from '@camp/sdk';
 
 // Initialize
@@ -268,64 +239,40 @@ const result = await sdk.registerIP({
   creator: walletAddress,
   tags: ['blockchain', 'solidity'],
 });
-```
-
-### Resources
-
-- [Camp Origin SDK Docs](https://camp.xyz/docs/sdk)
-- [Camp Basecamp Testnet](https://basecamp.camp)
-- [Explorer](https://basecamp-explorer.camp)
-
-## Common Tasks
-
-### Add New Contract
-
-1. Create `contracts/NewContract.sol`
-2. Add tests in `test/NewContract.test.js`
-3. Update `scripts/deploy.js` to include deployment
-4. Run `npm run compile && npm run test`
-
-### Update Contract Logic
-
-1. Edit contract
-2. Run `npm run compile`
-3. Run tests: `npm run test`
-4. If tests pass, redeploy: `npm run deploy:testnet`
-
-### Verify Contract on Explorer
-
-```bash
+Resources
+Camp Origin SDK Docs
+Camp Basecamp Testnet
+Explorer
+Common Tasks
+Add New Contract
+Create contracts/NewContract.sol
+Add tests in test/NewContract.test.js
+Update scripts/deploy.js to include deployment
+Run npm run compile && npm run test
+Update Contract Logic
+Edit contract
+Run npm run compile
+Run tests: npm run test
+If tests pass, redeploy: npm run deploy:testnet
+Verify Contract on Explorer
 npx hardhat verify --network basecamp 0xContractAddress "arg1" "arg2"
-```
-
-## Troubleshooting
-
-### Deployment failing?
-
-- Check wallet has enough testnet tokens
-- Verify RPC endpoint is accessible
-- Check private key in `.env` is correct
-- Look at tx on explorer for error details
-
-### Tests failing?
-
-- Ensure local node is running: `npx hardhat node`
-- Check contract ABI matches interface
-- Verify test data is valid
-
-### Can't find deployed address?
-
-- Check `contracts.json` after deployment
-- Look at deployment tx on explorer
-- Verify you deployed to correct network
-
-## Resources
-
-- [Hardhat Docs](https://hardhat.org)
-- [Solidity Docs](https://docs.soliditylang.org)
-- [ethers.js Docs](https://docs.ethers.org)
-- [Camp Network](https://camp.xyz)
-
----
-
-**Questions?** Check `docs/DESIGN.md` for the full design specification.
+Troubleshooting
+Deployment failing?
+Check wallet has enough testnet tokens
+Verify RPC endpoint is accessible
+Check private key in .env is correct
+Look at tx on explorer for error details
+Tests failing?
+Ensure local node is running: npx hardhat node
+Check contract ABI matches interface
+Verify test data is valid
+Can't find deployed address?
+Check contracts.json after deployment
+Look at deployment tx on explorer
+Verify you deployed to correct network
+Resources
+Hardhat Docs
+Solidity Docs
+ethers.js Docs
+Camp Network
+Questions? Check docs/DESIGN.md for the full design specification.
