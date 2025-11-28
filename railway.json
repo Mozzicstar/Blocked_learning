@@ -6,8 +6,10 @@
   },
   "deploy": {
     "numReplicas": 1,
-    "startCommand": "python main.py",
+    "startCommand": "node dist/server.js",
     "restartPolicyMaxRetries": 10,
-    "restartPolicyWindowSeconds": 60
+    "restartPolicyWindowSeconds": 60,
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 10
   }
 }
