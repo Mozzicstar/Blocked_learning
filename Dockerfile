@@ -9,9 +9,10 @@ COPY Backend/package.json Backend/package-lock.json ./
 # Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and contract ABIs
 COPY Backend/tsconfig.json ./
 COPY Backend/src ./src
+COPY Backend/src/contracts/*.abi.json ./src/contracts/
 
 # Build TypeScript
 RUN npm run build
