@@ -14,6 +14,9 @@ COPY Backend/tsconfig.json ./
 COPY Backend/src ./src
 COPY Backend/src/contracts/*.abi.json ./src/contracts/
 
+# Debug: List files to verify structure
+RUN ls -R /app/src
+
 # Build TypeScript
 RUN npm run build
 
