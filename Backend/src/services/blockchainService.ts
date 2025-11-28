@@ -100,7 +100,7 @@ interface ContractAddresses {
 }
 
 const getConfig = () => {
-  const rpcUrl = process.env.RPC_URL || process.env.CAMP_TESTNET_RPC || 'http://127.0.0.1:8545';
+  const rpcUrl = process.env.RPC_URL || process.env.CAMP_TESTNET_RPC || 'https://rpc.basecamp.t.raas.gelato.cloud';
   const privateKey = process.env.PRIVATE_KEY || '';
   
   const addresses: ContractAddresses = {
@@ -134,11 +134,6 @@ let contracts: {
 
 const initializeContracts = () => {
   const config = getConfig();
-  
-  // Workaround for RPC provider SSL certificate mismatch
-  if (config.rpcUrl.includes('conduit.xyz')) {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  }
   
   if (!provider) {
     provider = new JsonRpcProvider(config.rpcUrl);
