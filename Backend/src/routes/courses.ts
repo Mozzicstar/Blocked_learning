@@ -180,14 +180,14 @@ export const courseRoutes = async (app: FastifyInstance) => {
           const royaltyBps = 500; // 5% default royalty
 
           try {
-            const result = await ipRegistryService.registerCourse(
+            const result = await ipRegistryService.registerIP(
               onchainMetadataHash,
               tags,
               royaltyBps
             );
-            finalIpTokenId = result.courseId.toString();
+            finalIpTokenId = result.courseId;
             finalTxHash = result.txHash;
-            finalMetadataHash = onchainMetadataHash;
+            finalMetadataHash = result.metadataHash;
           } catch (blockchainError: any) {
             app.log.error('Blockchain registration failed:', blockchainError);
             return reply.status(500).send({

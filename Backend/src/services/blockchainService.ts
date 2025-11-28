@@ -285,6 +285,77 @@ export const ipRegistryService = {
   },
 
   /**
+   * Register a new course on-chain (WRITE OPERATION)
+   * This creates an IP token for the course and returns the course ID
+   * 
+   * @param metadataHash - IPFS hash of course metadata
+   * @param tags - Array of course tags/categories
+   * @param royaltyBps - Royalty basis points (100 = 1%)
+   * @returns Object with courseId, txHash, and metadata
+   */
+  registerIP: async (
+    metadataHash: string,
+    tags: string[] = [],
+    royaltyBps: number = 500 // Default 5% royalty
+  ): Promise<{
+    courseId: string;
+    txHash: string;
+    metadataHash: string;
+    timestamp: number;
+  }> => {
+    initializeContracts();
+    const contract = ensureContract(contracts.ipRegistry, 'IPRegistry');
+
+    try {
+      // Call registerCourse on the smart contract
+      const tx = await contract.registerCourse(metadataHash, tags, royaltyBps);
+      
+      // Wait for transaction to be mined
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed: No receipt returned');
+      }
+
+      // Parse the CourseRegistered event to get the course ID
+      const courseRegisteredEvent = receipt.logs
+        .map((log: any) => {
+          try {
+            return contract.interface.parseLog(log);
+          } catch {
+            return null;
+          }
+        })
+        .find((event: any) => event && event.name === 'CourseRegistered');
+
+      if (!courseRegisteredEvent) {
+        throw new Error('CourseRegistered event not found in transaction receipt');
+      }
+
+      const courseId = courseRegisteredEvent.args.ipId;
+
+      console.log(`[BlockchainService] Course registered successfully`);
+      console.log(`  - Course ID: ${courseId}`);
+      console.log(`  - Metadata Hash: ${metadataHash}`);
+      console.log(`  - TX Hash: ${receipt.hash}`);
+      console.log(`  - Tags: ${tags.join(', ') || 'none'}`);
+      console.log(`  - Royalty: ${royaltyBps / 100}%`);
+
+      return {
+        courseId: courseId.toString(),
+        txHash: receipt.hash,
+        metadataHash,
+        timestamp: Math.floor(Date.now() / 1000),
+      };
+    } catch (error: any) {
+      console.error(`[BlockchainService] Failed to register course:`, error.message);
+      throw new Error(
+        `Failed to register course on-chain: ${error.message || 'Unknown error'}`
+      );
+    }
+  },
+
+  /**
    * Get total number of courses
    */
   getTotalCourses: async (): Promise<bigint> => {
