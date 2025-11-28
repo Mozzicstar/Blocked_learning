@@ -1,11 +1,27 @@
 import { ethers, JsonRpcProvider, Wallet, Contract, formatEther, parseEther } from 'ethers';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const loadABI = (name: string) => {
+  try {
+    const abiPath = path.join(__dirname, `../contracts/${name}.abi.json`);
+    return JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+  } catch (error) {
+    console.warn(`Warning: Could not load ABI for ${name} at path ../contracts/${name}.abi.json`);
+    return [];
+  }
+};
 
 // Import ABIs
-import IPRegistryABI from '../contracts/IPRegistry.abi.json' with { type: 'json' };
-import CourseDirectoryABI from '../contracts/CourseDirectory.abi.json' with { type: 'json' };
-import CertificateNFTABI from '../contracts/CertificateNFT.abi.json' with { type: 'json' };
-import ReputationSystemABI from '../contracts/ReputationSystem.abi.json' with { type: 'json' };
-import RoyaltyManagerABI from '../contracts/RoyaltyManager.abi.json' with { type: 'json' };
+const IPRegistryABI = loadABI('IPRegistry');
+const CourseDirectoryABI = loadABI('CourseDirectory');
+const CertificateNFTABI = loadABI('CertificateNFT');
+const ReputationSystemABI = loadABI('ReputationSystem');
+const RoyaltyManagerABI = loadABI('RoyaltyManager');
 
 // ============ Types ============
 
