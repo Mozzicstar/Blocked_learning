@@ -1,5 +1,5 @@
 AI/
-contracts/
+/contracts/
 Frontend/
 deploy-railway.sh
 LICENSE
