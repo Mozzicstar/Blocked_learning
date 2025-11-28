@@ -131,3 +131,4 @@ function registerCourse(string calldata metadataHash) external returns (uint256)
 * End-to-end test script
 
 **Contact:** Backend API docs at https://blockbackend-production.up.railway.app/
+ok
