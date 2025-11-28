@@ -240,10 +240,15 @@ export const blockchainRoutes = async (app: FastifyInstance) => {
         },
       });
     } catch (error: any) {
-      app.log.error(error);
-      return reply.status(500).send({
-        statusCode: 500,
-        message: error.message || 'Failed to fetch total courses',
+      app.log.error('Error fetching total courses:', error.message);
+      // Return fallback response if RPC is unavailable
+      return reply.status(503).send({
+        statusCode: 503,
+        message: 'Blockchain RPC endpoint unavailable',
+        data: {
+          totalCourses: '0',
+          fallback: true,
+        },
       });
     }
   });
@@ -585,10 +590,15 @@ export const blockchainRoutes = async (app: FastifyInstance) => {
         },
       });
     } catch (error: any) {
-      app.log.error(error);
-      return reply.status(500).send({
-        statusCode: 500,
-        message: error.message || 'Failed to fetch total certificates',
+      app.log.error('Error fetching total certificates:', error.message);
+      // Return fallback response if RPC is unavailable
+      return reply.status(503).send({
+        statusCode: 503,
+        message: 'Blockchain RPC endpoint unavailable',
+        data: {
+          totalCertificates: '0',
+          fallback: true,
+        },
       });
     }
   });
