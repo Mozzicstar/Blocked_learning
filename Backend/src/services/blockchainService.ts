@@ -135,6 +135,11 @@ let contracts: {
 const initializeContracts = () => {
   const config = getConfig();
   
+  // Workaround for RPC provider SSL certificate mismatch
+  if (config.rpcUrl.includes('conduit.xyz')) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
+  
   if (!provider) {
     provider = new JsonRpcProvider(config.rpcUrl);
   }
