@@ -38,9 +38,10 @@ NEXT_PUBLIC_AI_SERVICE=https://blockedlearning-production.up.railway.app
 
 **Phase 3 - Creator & Admin:**
 - ✅ Course upload → `/api/courses/upload`
+- ✅ **Course publish (NEW!)** → `/api/courses/publish` - Register course on-chain
 - ✅ Admin dashboard → `/api/admin/stats`, `/api/admin/users`
 - ✅ User management → `/api/admin/ban`
-- ⏳ Course publish (waiting for blockchain integration)
+- ✅ Blockchain course registration now fully implemented!
 
 **Phase 4 - Discovery:**
 - ✅ Trending topics → `/api/trending`
@@ -76,7 +77,10 @@ curl https://blockbackend-production.up.railway.app/api/courses
 - `GET /api/courses` → List all courses
 - `GET /api/courses/:id` → Course details + modules
 - `POST /api/courses/upload` → Upload course metadata
+- `POST /api/courses/publish` → **[NEW]** Register course on-chain & publish
 - `GET /api/courses/onchain` → On-chain registered courses
+- `GET /api/blockchain/courses/total` → Total courses on-chain
+- `GET /api/blockchain/courses/:id` → On-chain course details
 
 ### Progress
 - `GET /api/user/progress` → User's progress
@@ -97,6 +101,13 @@ curl https://blockbackend-production.up.railway.app/api/courses
 ### Admin
 - `GET /api/admin/stats` → Platform statistics
 - `GET /api/admin/users` → User list
+
+### Blockchain (NEW!)
+- `POST /api/blockchain/courses/register` → Register course on-chain
+- `GET /api/blockchain/courses/:id` → Get on-chain course details
+- `GET /api/blockchain/courses/total` → Get total courses registered
+- `GET /api/blockchain/certificates/total` → Get total certificates issued
+- `GET /api/blockchain/status` → Check blockchain connection status
 
 ## Key Components to Build
 
@@ -138,14 +149,54 @@ const askMentor = async (question: string) => {
   );
   return response.json();
 };
+
+// [NEW] Publish course on blockchain
+const publishCourse = async (courseId: string) => {
+  const response = await fetch(
+    'https://blockbackend-production.up.railway.app/api/courses/publish',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ courseId })
+    }
+  );
+  return response.json();
+};
+
+// [NEW] Get blockchain course details
+const getOnchainCourse = async (courseId: string) => {
+  const response = await fetch(
+    `https://blockbackend-production.up.railway.app/api/blockchain/courses/${courseId}`
+  );
+  return response.json();
+};
 ```
+
+## Publishing a Course to Blockchain (NEW!)
+
+**Flow:**
+1. Creator uploads course via `/api/courses/upload`
+2. Creator clicks "Publish" to register on-chain
+3. Frontend calls `/api/courses/publish` with `courseId`
+4. Backend:
+   - Registers course on IPRegistry smart contract
+   - Returns `courseId`, `txHash`, `metadataHash`
+5. Frontend displays transaction confirmation
+6. Course is now on-chain with immutable metadata!
 
 ## Deliverables
 
 * **Vercel Deployment** - Live frontend
 * **Wallet Integration** - Full auth flow
 * **Course Marketplace** - Browse & view courses
+* **Course Publisher** - Upload and publish courses on-chain
 * **CheckMate Mentor** - AI assistant UI
 * **User Dashboard** - Progress tracking
+* **Blockchain Integration** - Course registration on Camp Network testnet
 
-**Backend is ready** — Start building immediately!
+**Backend is 100% ready** — All endpoints tested & live!
+- ✅ Core API functional
+- ✅ AI service integrated
+- ✅ Blockchain write operations implemented
+- ✅ Database configured
+- ✅ Authentication working
