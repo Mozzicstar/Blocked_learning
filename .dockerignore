@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+
+# Node modules
+node_modules
+npm-debug.log
+
+# Build artifacts
+Backend/dist
+Backend/coverage
+
+# Environment files (Railway provides these)
+Backend/.env.local
+Backend/.env.development
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+!Backend/package.json
+!Backend/package-lock.json
+
+# Other services/folders
+AI/
+Frontend/
+contracts/
+lib/
+
+# Scripts
+*.sh
