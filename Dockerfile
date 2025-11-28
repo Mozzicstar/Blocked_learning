@@ -1,23 +1,49 @@
-FROM python:3.11-slim
+# Root Dockerfile that builds the Backend service
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    gcc \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Copy package files
+COPY Backend/package.json Backend/package-lock.json ./
 
-COPY AI/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN npm ci
 
-COPY AI . 
+# Copy source code
+COPY Backend/tsconfig.json ./
+COPY Backend/src ./src
 
-RUN useradd -m -u 1000 aiuser && chown -R aiuser:aiuser /app
-USER aiuser
+# Build TypeScript
+RUN npm run build
 
-EXPOSE 8000
+# Production stage
+FROM node:20-alpine
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+WORKDIR /app
 
-CMD ["python", "main.py"]
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Copy package files
+COPY Backend/package.json Backend/package-lock.json ./
+
+# Install only production dependencies
+RUN npm ci --omit=dev
+
+# Copy built files from builder
+COPY --from=builder /app/dist ./dist
+
+# Copy .env if it exists
+COPY Backend/.env* ./
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+USER nodejs
+
+# Expose port
+EXPOSE 3001
+
+# Start application
+CMD ["node", "dist/server.js"]
