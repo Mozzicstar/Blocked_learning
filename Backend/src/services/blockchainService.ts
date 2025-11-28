@@ -8,10 +8,30 @@ const __dirname = path.dirname(__filename);
 
 const loadABI = (name: string) => {
   try {
-    const abiPath = path.join(__dirname, `../contracts/${name}.abi.json`);
-    return JSON.parse(fs.readFileSync(abiPath, 'utf8'));
+    // Try multiple paths to be safe
+    const pathsToTry = [
+      path.join(__dirname, `../contracts/${name}.abi.json`),
+      path.join(__dirname, `../../src/contracts/${name}.abi.json`),
+      path.join(process.cwd(), `dist/contracts/${name}.abi.json`),
+      path.join(process.cwd(), `src/contracts/${name}.abi.json`)
+    ];
+
+    console.log(`[BlockchainService] Attempting to load ABI for ${name}`);
+    
+    for (const abiPath of pathsToTry) {
+      if (fs.existsSync(abiPath)) {
+        console.log(`[BlockchainService] Found ABI at: ${abiPath}`);
+        const content = fs.readFileSync(abiPath, 'utf8');
+        const parsed = JSON.parse(content);
+        // Handle both array format and Truffle/Hardhat artifact format
+        return Array.isArray(parsed) ? parsed : parsed.abi;
+      }
+    }
+    
+    console.error(`[BlockchainService] Error: Could not find ABI for ${name} in any of the expected paths:`, pathsToTry);
+    return [];
   } catch (error) {
-    console.warn(`Warning: Could not load ABI for ${name} at path ../contracts/${name}.abi.json`);
+    console.error(`[BlockchainService] Exception loading ABI for ${name}:`, error);
     return [];
   }
 };

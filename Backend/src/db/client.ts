@@ -7,17 +7,27 @@ const { Pool } = pg;
 // Determine database type and create pool
 let pool: any;
 let sqlite: any = null;
-const isProduction = process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL?.includes('postgresql');
 
-if (isProduction || process.env.DATABASE_URL?.includes('postgresql')) {
-  // Use PostgreSQL in production
+// Check if we have a valid Postgres URL
+const hasPostgresUrl = process.env.DATABASE_URL && process.env.DATABASE_URL.includes('postgresql');
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction && hasPostgresUrl) {
+  // Use PostgreSQL in production ONLY if URL is provided
+  console.log('[DB] Initializing PostgreSQL connection...');
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: { rejectUnauthorized: false }
   });
 } else {
-  // Use SQLite in development
-  const dbPath = process.env.DATABASE_URL || path.join('/tmp', 'blockedlearning.db');
+  // Use SQLite in development OR if Postgres URL is missing in production
+  if (isProduction && !hasPostgresUrl) {
+    console.warn('[DB] WARNING: Production environment detected but DATABASE_URL is missing or invalid.');
+    console.warn('[DB] Falling back to SQLite. Data will be lost on container restart.');
+  }
+  
+  console.log('[DB] Initializing SQLite connection...');
+  const dbPath = process.env.SQLITE_PATH || path.join(process.cwd(), 'blockedlearning.db');
   sqlite = new Database(dbPath);
   sqlite.pragma('foreign_keys = ON');
 }
