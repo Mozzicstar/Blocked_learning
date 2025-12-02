@@ -1,8 +1,8 @@
 // app/dashboard/page.tsx
 "use client";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
-import useCourseStore from "@/stores/useCourseStore";
+
+// import useCourseStore from "@/stores/useCourseStore";
 import CourseCard from "@/components/CourseCard";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import ProgressBar from "@/components/ProgressBar";
@@ -10,15 +10,28 @@ import ProgressBar from "@/components/ProgressBar";
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [dashboard, setDashboard] = useState<any>(null);
-  const courses = useCourseStore((s) => s.courses);
+  const courses = [
+    {
+      id: 1,
+      title: "Course 1",
+      creator: "Creator 1",
+      modules: [
+        { id: 1, title: "Module 1", completed: true },
+        { id: 2, title: "Module 2", completed: false },
+      ],
+    },
+    {
+      id: 2,
+      title: "Course 2",
+      creator: "Creator 2",
+      modules: [
+        { id: 1, title: "Module 1", completed: true },
+        { id: 2, title: "Module 2", completed: false },
+      ],
+    },
+  ];
 
-  useEffect(() => {
-    api
-      .getDashboard()
-      .then((data) => setDashboard(data))
-      .finally(() => setLoading(false));
-  }, []);
-
+  
   if (loading) return <LoadingSkeleton rows={4} />;
 
   return (
@@ -76,7 +89,7 @@ export default function DashboardPage() {
                       (p.completedModules / p.totalModules) * 100
                     )}
                   />
-                </div>
+          </div>
               </li>
             ))}
           </ul>
@@ -85,7 +98,7 @@ export default function DashboardPage() {
             No activity yet. Start a course!
           </div>
         )}
-      </div>
+        </div>
     </section>
   );
 }

@@ -1,10 +1,10 @@
-export interface User {
+interface User {
   wallet: string;
   username?: string;
   email?: string;
 }
 
-export interface Course {
+interface Course {
   id: string;
   title: string;
   description: string;
@@ -13,13 +13,13 @@ export interface Course {
   level: string;
 }
 
-export interface UserProgress {
+interface UserProgress {
   completedModules: string[];
   xp: number;
   badges: string[];
 }
 
-export interface MentorResponse {
+interface MentorResponse {
   message: string;
   recommendedNextTopic?: string;
 }

@@ -1,44 +1,50 @@
-// "use client";
+"use client";
 
-// import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
-// import { WagmiConfig } from "wagmi";
-// import { baseSepolia } from "viem/chains";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
+import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
+import { WagmiProvider } from "wagmi";
+import { baseSepolia } from "wagmi/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode } from "react";
 
-// const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID;
-// if (!projectId) {
-//   throw new Error(
-//     "NEXT_PUBLIC_WALLETCONNECT_ID is not set in environment variables."
-//   );
-// }
+// 1. Get projectId at https://cloud.walletconnect.com
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "626";
 
-// const metadata = {
-//   name: "BlockedLearning",
-//   description: "Learning on Camp Network",
-//   url: "https://blockedlearning.xyz",
-//   icons: ["https://blockedlearning.xyz/icon.png"],
-// };
+// 2. Create wagmiConfig
+const metadata = {
+  name: "BlockedLearning",
+  description: "Blockchain-powered learning platform",
+  url: "https://blockedlearning.xyz",
+  icons: ["https://blockedlearning.xyz/icon.png"],
+};
 
-// const chains = [baseSepolia]; // Camp testnet is EVM-compatible
+const chains = [baseSepolia] as const;
+const config = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  ssr: true,
+});
 
-// const wagmiConfig = defaultWagmiConfig({
-//   //@ts-expect-error chains
-//   chains,
-//   projectId,
-//   metadata,
-// });
+// 3. Create modal
+// 3. Create modal
+createWeb3Modal({
+  wagmiConfig: config,
+  projectId,
+  enableAnalytics: false, // Disable analytics to prevent 400 errors with invalid IDs
+  enableOnramp: true,
+});
 
-// createWeb3Modal({
-//   wagmiConfig,
-//   projectId,
-//   //@ts-expect-error chains
-//   chains,
-//   themeMode: "light",
-// });
+if (projectId !== "626") {
+  console.error("❌ Missing NEXT_PUBLIC_WALLETCONNECT_ID in .env.local");
+}
 
-// export default function WalletProvider({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;
-// }
+export default function WalletProvider({ children }: { children: ReactNode }) {
+  const queryClient = new QueryClient();
+
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  );
+}

@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 "use client";
 import Link from "next/link";
-import { WalletConnect } from "./WalletConnect";
+import WalletConnect from "./WalletConnect";
 
 export default function Navbar() {
   return (

@@ -1,51 +1,41 @@
-// components/CourseCard.tsx
-"use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Course } from "@/store/slices/coursesSlice";
 
-type Props = {
-  id: string;
-  title: string;
-  description: string;
-  creator?: string;
-  progress?: { completed: number; total: number } | null;
-};
+interface CourseCardProps {
+  course: Course;
+}
 
-export default function CourseCard({
-  id,
-  title,
-  description,
-  creator,
-  progress,
-}: Props) {
-  const pct =
-    progress && progress.total > 0
-      ? Math.round((progress.completed / progress.total) * 100)
-      : 0;
-
+export default function CourseCard({ course }: CourseCardProps) {
   return (
-    <motion.article
-      whileHover={{ y: -4 }}
-      className="rounded-lg border bg-white p-4 shadow-sm"
-    >
-      <div className="flex items-start gap-3">
-        <div className="p-3 rounded bg-slate-100">
-          <BookOpen size={28} />
+    <Card className="flex flex-col h-full hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <CardTitle className="line-clamp-2">{course.title}</CardTitle>
+          {course.isPublished ? (
+            <Badge variant="default">Published</Badge>
+          ) : (
+            <Badge variant="secondary">Draft</Badge>
+          )}
         </div>
-        <div className="flex-1">
-          <Link href={`/courses/${id}`} className="text-lg font-semibold">
-            {title}
-          </Link>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-            {description}
-          </p>
-          <div className="mt-3 flex items-center justify-between">
-            <div className="text-xs text-gray-500">{creator}</div>
-            <div className="text-xs text-gray-600">{pct}%</div>
-          </div>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <p className="text-muted-foreground text-sm line-clamp-3">
+          {course.description}
+        </p>
+        <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <span>{course.modules.length} Modules</span>
+          <span>•</span>
+          <span>{course.price} ETH</span>
         </div>
-      </div>
-    </motion.article>
+      </CardContent>
+      <CardFooter>
+        <Link href={`/courses/${course.id}`} className="w-full">
+          <Button className="w-full">View Course</Button>
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
