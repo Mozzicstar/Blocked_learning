@@ -1,52 +1,41 @@
-// app/courses/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
+import { useAppStore } from "@/store/useAppStore";
 import CourseCard from "@/components/CourseCard";
-// import LoadingSkeleton from "@/components/LoadingSkeleton";
-import { api } from "@/lib/api";
-import useCourseStore from "@/stores/useCourseStore";
+import { Loader2 } from "lucide-react";
+import SearchBar from "@/components/SearchBar";
 
 export default function CoursesPage() {
-  const [loading, setLoading] = useState(true);
-  const setCourses = useCourseStore((s) => s._seedReplace);
-  const courses = useCourseStore((s) => s.courses);
+  const { courses, fetchCourses, isLoadingCourses } = useAppStore();
 
   useEffect(() => {
-    let mounted = true;
-    api
-      .getCourses()
-      .then((data) => {
-        if (!mounted) return;
-        // optionally sync into zustand
-        setCourses?.(data);
-      })
-      .finally(() => setLoading(false));
-    return () => {
-      mounted = false;
-    };
-  }, [setCourses]);
-
-  // if (loading) return <LoadingSkeleton rows={6} />;
+    fetchCourses();
+  }, [fetchCourses]);
 
   return (
-    <section className="space-y-6">
-      <h2 className="text-xl font-semibold">Courses</h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {courses.map((c) => (
-          <CourseCard
-            key={c.id}
-            id={c.id}
-            title={c.title}
-            description={c.description}
-            creator={c.creator}
-            progress={{
-              completed: c.modules.filter((m: any) => m.completed).length,
-              total: c.modules.length,
-            }}
-          />
-        ))}
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">All Courses</h1>
+          <p className="text-muted-foreground">
+            Explore our blockchain-powered courses
+          </p>
+        </div>
+        <SearchBar />
       </div>
-    </section>
+
+      {isLoadingCourses ? (
+        <div className="flex justify-center items-center min-h-[40vh]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

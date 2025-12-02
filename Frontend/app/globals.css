@@ -9,100 +9,51 @@ body {
 
 @custom-variant dark (&:is(.dark *));
 @theme {
-  /* Base Light Indigo */
-  --background: #f3f6ff; /* base-light-50 */
-  --foreground: #1f264d; /* base-light-900 */
+  /* Base Light Palette */
+  --background: #0f101f; /* Dark grayish indigo */
+  --foreground: #f4f7fe; /* Light white/blueish gray */
 
-  --primary: #2e38ff; /* base-dark-500 */
+  /* Primary */
+  --primary: #00b8d4; /* Cyan Blue */
   --primary-foreground: #eceeff;
 
-  --secondary: #748aff; /* base-light-500 */
-  --secondary-foreground: #1f264d;
+  /* Secondary */
+  --secondary: #8f5ff9; /* Soft purple */
+  --secondary-foreground: #1f264d; /* Dark Indigo */
 
-  --accent: #ff8f1f; /* accent-orange-500 */
-  --accent-foreground: #4c2508;
+  /* Accent */
+  --accent: #ff007f; /* Neon pink */
+  --accent-foreground: #1f264d;
 
-  /* Muted / Neutral */
-  --muted: #e4e9ff; /* base-light-100 */
+  /* Muted */
+  --muted: #a9b8ff; /* Light pastel blue */
   --muted-foreground: #4455a6;
 
   /* Destructive */
-  --destructive: #7ab800; /* accent-lime-500 */
-  --destructive-foreground: #1b2800;
+  --destructive: #ff5722; /* Soft red-orange */
+  --destructive-foreground: #1f264d;
 
-  --border: #c7d1ff; /* base-light-200 */
+  /* Borders / Inputs */
+  --border: #545eff; /* Dark blue */
   --input: #c7d1ff;
-  --ring: #8da2ff; /* light-indigo-400 */
+  --ring: #8da2ff; /* Light indigo */
 
-  /* Chart Colors */
-  --chart-1: #2e38ff; /* dark-indigo-500 */
-  --chart-2: #ff8f1f; /* orange-500 */
-  --chart-3: #7ab800; /* lime-500 */
-  --chart-4: #a9b8ff; /* light-indigo-300 */
-  --chart-5: #545eff; /* dark-indigo-400 */
+  /* Charts */
+  --chart-1: #00b8d4; /* Cyan Blue */
+  --chart-2: #ff007f; /* Neon pink */
+  --chart-3: #7ab800; /* Lime green */
+  --chart-4: #a9b8ff; /* Light blue */
+  --chart-5: #ff5722; /* Red-Orange */
 
   /* Sidebar */
-  --sidebar: #f3f6ff;
-  --sidebar-foreground: #1f264d;
-  --sidebar-primary: #2e38ff;
+  --sidebar: #0f101f;
+  --sidebar-foreground: #f4f7fe;
+  --sidebar-primary: #00b8d4;
   --sidebar-primary-foreground: #eceeff;
-  --sidebar-accent: #ff8f1f;
-  --sidebar-accent-foreground: #4c2508;
-  --sidebar-border: #c7d1ff;
+  --sidebar-accent: #ff007f;
+  --sidebar-accent-foreground: #1f264d;
+  --sidebar-border: #545eff;
   --sidebar-ring: #8da2ff;
-
-  /* Light Indigo Base */
-  --color-base-light-50: #f3f6ff;
-  --color-base-light-100: #e4e9ff;
-  --color-base-light-200: #c7d1ff;
-  --color-base-light-300: #a9b8ff;
-  --color-base-light-400: #8da2ff;
-  --color-base-light-500: #748aff;
-  --color-base-light-600: #5a6fd6;
-  --color-base-light-700: #4455a6;
-  --color-base-light-800: #303c75;
-  --color-base-light-900: #1f264d;
-
-  /* Dark Indigo Base */
-  --color-base-dark-50: #eceeff;
-  --color-base-dark-100: #d3d7ff;
-  --color-base-dark-200: #a6adff;
-  --color-base-dark-300: #7a84ff;
-  --color-base-dark-400: #545eff;
-  --color-base-dark-500: #2e38ff;
-  --color-base-dark-600: #222acb;
-  --color-base-dark-700: #1a2098;
-  --color-base-dark-800: #131667;
-  --color-base-dark-900: #0b0d3d;
-
-  /* Bright Orange Accent */
-  --color-accent-orange-50: #fff7ed;
-  --color-accent-orange-100: #ffefd6;
-  --color-accent-orange-200: #ffd7a8;
-  --color-accent-orange-300: #ffbf79;
-  --color-accent-orange-400: #ffa74c;
-  --color-accent-orange-500: #ff8f1f;
-  --color-accent-orange-600: #d67319;
-  --color-accent-orange-700: #a65713;
-  --color-accent-orange-800: #753c0d;
-  --color-accent-orange-900: #4c2508;
-
-  /* Dark Lime Accent */
-  --color-accent-lime-50: #f5ffe6;
-  --color-accent-lime-100: #e8ffc2;
-  --color-accent-lime-200: #d0ff85;
-  --color-accent-lime-300: #b6ff47;
-  --color-accent-lime-400: #9cff00;
-  --color-accent-lime-500: #7ab800;
-  --color-accent-lime-600: #5f9200;
-  --color-accent-lime-700: #466b00;
-  --color-accent-lime-800: #2f4700;
-  --color-accent-lime-900: #1b2800;
-
-  /* Status colors (optional) */
-  --color-success: #16a34a;
-  --color-warning: #f59e0b;
-  --color-error: #dc2626;
 }
 
 @theme inline {
@@ -147,10 +98,10 @@ body {
 
 :root {
   /* ------------------------------------------------------ */
-  /* Light Mode – Balanced Modern Indigo + Orange + Lime     */
+  /* Light Mode – Balanced Modern Indigo + Neon Colors      */
   /* ------------------------------------------------------ */
 
-  --background: oklch(0.98 0.01 260); /* Very soft cool-white */
+  --background: oklch(0.98 0.01 260); /* Soft cool white */
   --foreground: oklch(0.22 0.04 260); /* Deep muted indigo */
 
   --card: oklch(0.99 0.008 260);
@@ -159,11 +110,11 @@ body {
   --popover: oklch(0.99 0.008 260);
   --popover-foreground: oklch(0.22 0.04 260);
 
-  /* Primary – softened indigo */
+  /* Primary – Cyan Blue */
   --primary: oklch(0.54 0.15 265);
   --primary-foreground: oklch(0.97 0.01 260);
 
-  /* Secondary – light indigo tint */
+  /* Secondary – Soft Purple */
   --secondary: oklch(0.92 0.04 260);
   --secondary-foreground: oklch(0.28 0.05 260);
 
@@ -171,11 +122,11 @@ body {
   --muted: oklch(0.93 0.02 260);
   --muted-foreground: oklch(0.5 0.03 260);
 
-  /* Accent – soft modern orange */
+  /* Accent – Neon Pink */
   --accent: oklch(0.78 0.13 70);
   --accent-foreground: oklch(0.24 0.04 60);
 
-  /* Destructive – modernized lime (less neon) */
+  /* Destructive – Soft Red-Orange */
   --destructive: oklch(0.72 0.18 120);
   --destructive-foreground: oklch(0.2 0.04 120);
 
@@ -184,7 +135,7 @@ body {
   --input: oklch(0.86 0.01 260);
   --ring: oklch(0.64 0.04 260);
 
-  /* Charts – harmonized palette */
+  /* Charts – Harmonized Palette */
   --chart-1: oklch(0.54 0.15 265);
   --chart-2: oklch(0.78 0.13 70);
   --chart-3: oklch(0.72 0.18 120);
@@ -209,11 +160,11 @@ body {
 
 .dark {
   /* ------------------------------------------------------ */
-  /* Dark Mode – Balanced Modern                            */
+  /* Dark Mode – Balanced Neon and Soft Tones               */
   /* ------------------------------------------------------ */
 
-  --background: oklch(0.18 0.02 260);
-  --foreground: oklch(0.96 0.01 260);
+  --background: oklch(0.18 0.02 260); /* Dark muted indigo */
+  --foreground: oklch(0.96 0.01 260); /* Light white/gray */
 
   --card: oklch(0.22 0.02 260);
   --card-foreground: oklch(0.96 0.01 260);
@@ -221,31 +172,39 @@ body {
   --popover: oklch(0.22 0.02 260);
   --popover-foreground: oklch(0.96 0.01 260);
 
+  /* Primary – Soft Cyan */
   --primary: oklch(0.74 0.14 265);
   --primary-foreground: oklch(0.18 0.02 260);
 
+  /* Secondary – Soft Purple */
   --secondary: oklch(0.34 0.04 260);
   --secondary-foreground: oklch(0.96 0.01 260);
 
+  /* Muted */
   --muted: oklch(0.3 0.03 260);
   --muted-foreground: oklch(0.78 0.03 260);
 
+  /* Accent – Neon Pink */
   --accent: oklch(0.7 0.11 70);
   --accent-foreground: oklch(0.18 0.03 60);
 
+  /* Destructive – Soft Red-Orange */
   --destructive: oklch(0.68 0.16 120);
   --destructive-foreground: oklch(0.18 0.03 120);
 
+  /* Borders / Inputs / Rings */
   --border: oklch(0.3 0.01 260);
   --input: oklch(0.3 0.01 260);
   --ring: oklch(0.58 0.03 260);
 
+  /* Charts – Harmonized Palette */
   --chart-1: oklch(0.74 0.14 265);
   --chart-2: oklch(0.7 0.11 70);
   --chart-3: oklch(0.68 0.16 120);
   --chart-4: oklch(0.64 0.09 240);
   --chart-5: oklch(0.6 0.14 280);
 
+  /* Sidebar */
   --sidebar: oklch(0.22 0.02 260);
   --sidebar-foreground: oklch(0.96 0.01 260);
 

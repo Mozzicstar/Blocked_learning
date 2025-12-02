@@ -97,7 +97,7 @@ export default function ModulePage({}: {}) {
             Next module → {nextModule.title}
           </Button>
         ) : (
-          <div className="text-sm text-gray-500">This is the last module.</div>
+          <div className="text-sm text-muted-foreground">This is the last module.</div>
         )}
       </div>
     </section>
