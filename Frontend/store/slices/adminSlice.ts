@@ -18,9 +18,11 @@ export interface AdminSlice {
   banUser: (walletAddress: string) => Promise<void>;
 }
 
+import { MOCK_USERS, MOCK_ADMIN_STATS } from "../../lib/mockData";
+
 export const adminSlice: StateCreator<AdminSlice> = (set) => ({
-  stats: null,
-  usersList: [],
+  stats: MOCK_ADMIN_STATS,
+  usersList: MOCK_USERS,
   isAdminLoading: false,
   adminError: null,
 

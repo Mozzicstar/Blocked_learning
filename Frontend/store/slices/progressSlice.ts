@@ -19,8 +19,10 @@ export interface ProgressSlice {
   ) => Promise<void>;
 }
 
+import { MOCK_USER_PROGRESS } from "../../lib/mockData";
+
 export const progressSlice: StateCreator<ProgressSlice> = (set) => ({
-  userProgress: [],
+  userProgress: MOCK_USER_PROGRESS,
   isLoadingProgress: false,
   progressError: null,
 
