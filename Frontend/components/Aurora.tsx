@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
 
 const VERT = `#version 300 es
@@ -116,14 +116,39 @@ interface AuroraProps {
   speed?: number;
 }
 
+import { useTheme } from "next-themes";
+
 export default function Aurora(props: AuroraProps) {
-  const {
-    colorStops = ["#5227FF", "#7cff67", "#5227FF"],
-    amplitude = 1.0,
-    blend = 0.5,
-  } = props;
-  const propsRef = useRef<AuroraProps>(props);
-  propsRef.current = props;
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const defaultDarkStops = ["#00D5FF", "#6C2EFF", "#00D5FF"];
+  const defaultLightStops = ["#aaf0feff", "#c3a9ffff", "#9887fdef"]; // Cyan -> Purple -> Pink
+
+  const activeStops = props.colorStops
+    ? props.colorStops
+    : mounted && resolvedTheme === "light"
+    ? defaultLightStops
+    : defaultDarkStops;
+
+  const { colorStops = activeStops, amplitude = 1.0, blend = 0.5 } = props;
+
+  // Update ref with the active colors
+  const propsRef = useRef<AuroraProps>({ ...props, colorStops: activeStops });
+
+  // Update ref when theme or props change
+  useEffect(() => {
+    propsRef.current = {
+      ...props,
+      colorStops: activeStops,
+      amplitude: props.amplitude ?? 1.0,
+      blend: props.blend ?? 0.5,
+    };
+  }, [activeStops, props.amplitude, props.blend, props]);
 
   const ctnDom = useRef<HTMLDivElement>(null);
 

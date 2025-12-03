@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BlockedLearning Frontend 🎨
 
-## Getting Started
+> **A futuristic, blockchain-powered learning experience.**
 
-First, run the development server:
+Welcome to the frontend of **BlockedLearning**. This is not just another LMS; it's a Web3-native educational platform designed with a "Glassmorphism" and "Neon" aesthetic to immerse users in the future of learning.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Built with **Next.js 15**, **TailwindCSS**, and **Framer Motion**, it features a seamless integration of on-chain identity (WalletConnect) and off-chain AI mentorship.
+
+## ✨ Key Features
+
+### 1. 🌌 Immersive UI/UX
+
+- **Aurora Backgrounds**: Dynamic, shader-like background animations that react to the theme.
+- **Glassmorphism**: Premium frosted glass effects on cards and modals.
+- **Micro-interactions**: Smooth hover states and transitions powered by `framer-motion`.
+- **Dark/Light Mode**: A carefully curated neon-dark mode and a vibrant-light mode.
+
+### 2. 🤖 AI Mentor Integration ("CheckMate")
+
+- **Context-Aware Chat**: The mentor knows exactly which module you are viewing.
+- **Floating Interface**: An unobtrusive, always-available AI assistant.
+- **Real-time Guidance**: Suggests next steps based on your progress.
+
+### 3. 🔗 Web3 Native
+
+- **WalletConnect**: Seamless login with any crypto wallet.
+- **Token Gated**: Access courses based on on-chain ownership (mocked for MVP).
+- **IP Registration**: Creators can upload courses that are automatically registered as IP on the **Camp Network**.
+
+### 4. 📚 Course Experience
+
+- **Theater Mode**: A distraction-free video player for immersive learning.
+- **Interactive Curriculum**: Track progress module-by-module.
+- **Creator Studio**: A multi-step editor for uploading content and minting IP.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling**: [TailwindCSS](https://tailwindcss.com/) + CSS Variables
+- **Animation**: [Framer Motion](https://www.framer.com/motion/) + [OGL](https://github.com/oframe/ogl) (for WebGL shaders)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Web3**: [Web3Modal](https://web3modal.com/) + [Wagmi](https://wagmi.sh/) + [Viem](https://viem.sh/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+
+## 🚀 Getting Started
+
+1.  **Install Dependencies**
+
+    ```bash
+    npm install
+    ```
+
+2.  **Run Development Server**
+
+    ```bash
+    npm run dev
+    ```
+
+3.  **Open in Browser**
+    Navigate to [http://localhost:3000](http://localhost:3000).
+
+## 📂 Project Structure
+
+```
+app/
+├── (routes)/          # Main application routes (Dashboard, Courses)
+│   ├── dashboard/     # User progress & stats
+│   ├── courses/       # Course player & details
+│   └── creator/       # Course upload studio
+├── api/               # Next.js API routes (proxies)
+└── globals.css        # Global variables & tailwind directives
+
+components/
+├── ui/                # Reusable Shadcn UI components
+├── course/            # Course-specific components (Player, List)
+├── dashboard/         # Dashboard widgets (Grid, Stats)
+├── creator/           # Upload wizard components
+└── landing/           # Landing page sections
+
+store/                 # Zustand state slices (User, Course, Mentor)
+lib/                   # Utilities & Mock Data
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Design System
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+We use a set of global CSS variables to maintain consistency.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Primary**: Neon Blue (`#00D5FF`) to Purple (`#6C2EFF`) gradients.
+- **Background**: Deep space black for dark mode, crisp white for light mode.
+- **Cards**: Translucent backgrounds with subtle borders.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+_Built with ❤️ for the TechyJaunt × Camp Buildathon._

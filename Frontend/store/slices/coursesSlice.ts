@@ -34,7 +34,7 @@ import { MOCK_COURSES } from "../../lib/mockData";
 
 export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
   courses: MOCK_COURSES,
-  currentCourse: MOCK_COURSES[0],
+  currentCourse: null,
   isLoadingCourses: false,
   coursesError: null,
 
@@ -55,7 +55,8 @@ export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
   fetchCourseById: async (id: string) => {
     set({ isLoadingCourses: true, coursesError: null });
     try {
-      const course = await coursesApi.getCourseById(id);
+      // const course = await coursesApi.getCourseById(id);
+      const course = MOCK_COURSES.find((course) => course.id == id) || MOCK_COURSES[0];
       set({ currentCourse: course, isLoadingCourses: false });
     } catch (error: any) {
       set({

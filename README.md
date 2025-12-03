@@ -1,5 +1,7 @@
 # BLOCKEDLEARNING
 
+![BlockedLearning Landing Page](./landing.png)
+
 A blockchain-powered educational platform where learners access verifiable courses on Camp Network, with CheckMate AI mentor guidance. Built for TechyJaunt × Camp Buildathon.
 
 ## 🎯 Project Overview
@@ -7,11 +9,36 @@ A blockchain-powered educational platform where learners access verifiable cours
 **Goal:** Build a platform to register and deliver educational content as verifiable IP on Camp Network, with a rule-based AI mentor (MVP).
 
 **Core Features:**
+
 - Wallet authentication & on-chain course registration
 - Learner dashboard with progress tracking
 - CheckMate mentor guidance based on skill gaps
 - Trending topics aggregator
 - Creator upload & IP tokenization
+
+## 🚀 Running the Servers
+
+### Frontend (Client)
+
+The frontend is built with Next.js 15, TailwindCSS, and Framer Motion.
+
+```bash
+cd Frontend
+npm install
+npm run dev
+# Runs on http://localhost:3000
+```
+
+### Backend (API)
+
+The backend uses Node.js, Fastify, and PostgreSQL.
+
+```bash
+cd Backend
+npm install
+npm run dev
+# Runs on http://localhost:3001
+```
 
 ## 📋 Quick Start
 
@@ -26,12 +53,12 @@ A blockchain-powered educational platform where learners access verifiable cours
 
 Each role has a dedicated folder with design docs and implementation guides:
 
-| Role | Folder | Design Doc | Setup |
-|------|--------|-----------|-------|
-| Frontend | `/Frontend` | `Frontend/docs/DESIGN.md` | See `Frontend/README.md` |
-| Backend | `/Backend` | `Backend/docs/DESIGN.md` | See `Backend/README.md` |
-| Blockchain | `/contracts` | `contracts/docs/DESIGN.md` | See `contracts/README.md` |
-| AI / CheckMate | `/AI` | `AI/docs/DESIGN.md` | See `AI/README.md` |
+| Role           | Folder       | Design Doc                 | Setup                     |
+| -------------- | ------------ | -------------------------- | ------------------------- |
+| Frontend       | `/Frontend`  | `Frontend/docs/DESIGN.md`  | See `Frontend/README.md`  |
+| Backend        | `/Backend`   | `Backend/docs/DESIGN.md`   | See `Backend/README.md`   |
+| Blockchain     | `/contracts` | `contracts/docs/DESIGN.md` | See `contracts/README.md` |
+| AI / CheckMate | `/AI`        | `AI/docs/DESIGN.md`        | See `AI/README.md`        |
 
 ## 🏗️ Architecture
 
@@ -112,58 +139,68 @@ All endpoints assume `API_BASE = ${NEXT_PUBLIC_API_BASE}`
 ### Core Endpoints
 
 **Auth**
+
 - `POST /api/auth/nonce` → nonce for signing
 - `POST /api/auth/verify` → verify signature → JWT
 - `GET /api/me` → user profile
 
 **Courses**
+
 - `GET /api/courses` → list all
 - `GET /api/courses/:id` → details + modules
 - `POST /api/courses/upload` → metadata upload
 - `GET /api/courses/onchain` → filtered to on-chain registered
 
 **Progress**
+
 - `GET /api/user/progress` → user progress
 - `POST /api/user/progress` → mark module complete
 
 **CheckMate**
+
 - `POST /api/mentor/suggest` → recommend next steps
 - `POST /api/mentor/explain` → topic explanation + links
 
 **Trending**
+
 - `GET /api/trending` → trending topics feed
 
 **Blockchain**
+
 - `POST /api/register-ip` → register course IP on-chain
 - `GET /api/contract-info` → addresses & ABIs
 
 ## 📦 Tech Stack
 
-| Component | Tech | Why |
-|-----------|------|-----|
-| Frontend | Next.js, TailwindCSS, Web3Modal | Fast, Vercel-friendly, wallet UX |
-| Backend | Fastify, Postgres/Supabase, ethers.js | Lightweight, scalable, quick setup |
-| Blockchain | Camp Origin SDK, Solidity (optional) | IP tokenization, testnet-ready |
-| AI / CheckMate | Python FastAPI, spaCy, rules-based | MVP-ready, upgrade path to LLM |
+| Component      | Tech                                  | Why                                |
+| -------------- | ------------------------------------- | ---------------------------------- |
+| Frontend       | Next.js, TailwindCSS, Web3Modal       | Fast, Vercel-friendly, wallet UX   |
+| Backend        | Fastify, Postgres/Supabase, ethers.js | Lightweight, scalable, quick setup |
+| Blockchain     | Camp Origin SDK, Solidity (optional)  | IP tokenization, testnet-ready     |
+| AI / CheckMate | Python FastAPI, spaCy, rules-based    | MVP-ready, upgrade path to LLM     |
 
 ## 🚀 Deployment
 
 ### Frontend
+
 - **Host:** Vercel (auto-deploy from `main`)
 - **Env vars:** `NEXT_PUBLIC_API_BASE`, `NEXT_PUBLIC_CONTRACT_ADDRESSES`
 - **Command:** `vercel deploy`
 
 ### Backend
+
 - **Host:** Railway, Render, or Vercel serverless + Supabase DB
 - **Env vars:** `DATABASE_URL`, `CAMP_SDK_KEY`, `JWT_SECRET`
 - **Command:** `npm run build && npm start`
 
 ### Blockchain
+
 - **Testnet:** Camp Basecamp testnet
 - **Deploy:** `npx hardhat run scripts/deploy.js --network basecamp`
 - **Output:** Capture contract address & ABI → store in backend env
 
 ### AI / CheckMate
+
 - **Host:** Railway or self-hosted
 - **Env vars:** `BACKEND_DB_URL` (to query progress)
 - **Command:** `uvicorn main:app --reload`
@@ -322,4 +359,3 @@ See LICENSE file for details.
 ---
 
 .
-
