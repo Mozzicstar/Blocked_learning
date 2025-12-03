@@ -23,7 +23,7 @@ class GeminiClient:
             raise ValueError("GEMINI_API_KEY not found in environment variables")
         
         genai.configure(api_key=api_key)
-        self.model_name = "gemini-2.5-flash"
+        self.model_name = "gemini-2.0-flash"
         self.model = genai.GenerativeModel(self.model_name)
         
     async def generate(
@@ -88,9 +88,21 @@ class GeminiClient:
                         import re
                         json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
                         if json_match:
-                            response_data = json.loads(json_match.group())
+                            try:
+                                response_data = json.loads(json_match.group())
+                            except json.JSONDecodeError:
+                                # If still can't parse, try to fix common issues
+                                # Extract the explanation field directly if present
+                                exp_match = re.search(r'"explanation"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', response_text)
+                                if exp_match:
+                                    response_data = {"explanation": exp_match.group(1).replace('\\"', '"')}
+                                else:
+                                    # Return raw text as explanation
+                                    clean_text = response_text.replace('{', '').replace('"explanation":', '').strip()
+                                    response_data = {"explanation": clean_text[:1000]}
                         else:
-                            raise Exception(f"No valid JSON found in response. Raw text: {response_text[:200]}")
+                            # Return raw text as explanation if no JSON structure found
+                            response_data = {"explanation": response_text[:1000]}
                     
                     # Validate with Pydantic
                     validated = response_schema(**response_data)
