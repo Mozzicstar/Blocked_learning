@@ -1,4 +1,4 @@
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'https://blockedlearning-production.up.railway.app';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'https://blockedlearning-ai-production.up.railway.app';
 const RATE_LIMIT_PER_MINUTE = parseInt(process.env.RATE_LIMIT || '10');
 
 // In-memory rate limiter (in production, use Redis)
