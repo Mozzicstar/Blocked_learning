@@ -1,12 +1,21 @@
-# Backend Setup & Development
+# BlockedLearning Backend ⚙️
 
-Welcome, Backend Developer! This folder contains the BLOCKEDLEARNING API server.
+> **The orchestration layer for on-chain IP and off-chain intelligence.**
 
-## Quick Reference
+Welcome to the backend of **BlockedLearning**. This service acts as the bridge between the user's learning journey, the **Camp Network** blockchain, and our **CheckMate AI** mentor.
 
-- **Design Doc:** See `docs/DESIGN.md` for full specifications
-- **Tech Stack:** Node.js + Fastify (or Express), PostgreSQL/Supabase, ethers.js
-- **Deploy:** Railway, Render, or Vercel serverless
+## 🧠 Why this Architecture?
+
+We chose a hybrid approach to ensure scalability and user experience:
+
+1.  **On-Chain Truth**: Course ownership and IP registration happen on the Camp Network (via the Origin SDK) to ensure verifiable attribution.
+2.  **Off-Chain Speed**: User progress, session management, and high-frequency AI interactions are handled here to prevent gas costs and latency.
+3.  **AI Orchestration**: This backend proxies requests to our Python AI service, adding a layer of security, rate limiting, and context enrichment before the prompt reaches the LLM/Rule-engine.
+
+## ⚡ Quick Reference
+
+- **Tech Stack:** Node.js + Fastify (High performance), PostgreSQL (Data persistence), Ethers.js (Blockchain interaction).
+- **Key Role:** Manages the "Proof of Learning" lifecycle.
 - **Start Development:** `npm run dev`
 
 ## Prerequisites
@@ -49,19 +58,21 @@ Server runs on `http://localhost:3001`.
 The AI service is already deployed and running. To use it in your backend:
 
 1. **Proxy Endpoints:** Create routes that forward requests to the AI service
+
    ```javascript
-   const AI_BASE = 'https://blockedlearning-production.up.railway.app';
-   app.post('/api/mentor/explain', async (req, res) => {
+   const AI_BASE = "https://blockedlearning-production.up.railway.app";
+   app.post("/api/mentor/explain", async (req, res) => {
      const response = await fetch(`${AI_BASE}/mentor/explain`, {
-       method: 'POST',
-       headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify(req.body)
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify(req.body),
      });
      res.json(await response.json());
    });
    ```
 
 2. **Available AI Endpoints:**
+
    - `POST /mentor/explain` — Personalized explanations
    - `POST /mentor/suggest` — Next-step recommendations
    - `POST /mentor/profile` — Learning profile & 4-week plan
@@ -227,7 +238,7 @@ GET /api/trending
 Handles JWT & nonce verification.
 
 ```typescript
-import { authService } from '@/services/authService';
+import { authService } from "@/services/authService";
 
 const nonce = authService.generateNonce();
 const token = authService.verifySignature(wallet, signature, nonce);
@@ -238,7 +249,7 @@ const token = authService.verifySignature(wallet, signature, nonce);
 Calls Camp Origin SDK to register IP.
 
 ```typescript
-import { blockchainService } from '@/services/blockchain';
+import { blockchainService } from "@/services/blockchain";
 
 const result = blockchainService.registerIP({
   fileCid,
@@ -253,7 +264,7 @@ const result = blockchainService.registerIP({
 Rule-based mentor logic.
 
 ```typescript
-import { checkmate } from '@/services/checkmate';
+import { checkmate } from "@/services/checkmate";
 
 const suggestion = checkmate.suggest(userProgress);
 const explanation = checkmate.explain(question);

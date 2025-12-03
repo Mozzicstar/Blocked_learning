@@ -26,7 +26,7 @@ export interface CoursesSlice {
 }
 
 export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
-  courses: [],
+  courses: MOCK_COURSES,
   currentCourse: null,
   isLoadingCourses: false,
   coursesError: null,
@@ -51,12 +51,9 @@ export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
   fetchCourseById: async (id: string) => {
     set({ isLoadingCourses: true, coursesError: null });
     try {
-      const data = await coursesApi.getCourseById(id);
-      // Backend returns { course, modules }
-      set({ 
-        currentCourse: data?.course ? { ...data.course, modules: data.modules || [] } : null, 
-        isLoadingCourses: false 
-      });
+      // const course = await coursesApi.getCourseById(id);
+      const course = MOCK_COURSES.find((course) => course.id == id) || MOCK_COURSES[0];
+      set({ currentCourse: course, isLoadingCourses: false });
     } catch (error: any) {
       console.error("Failed to fetch course:", error);
       set({

@@ -7,6 +7,7 @@ import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { Loader2, Send, Bot, User as UserIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function MentorPanel({ context }: { context: string }) {
   const { messages, askMentor, isMentorLoading, clearChat } = useAppStore();
@@ -41,55 +42,68 @@ export default function MentorPanel({ context }: { context: string }) {
       <CardContent className="flex-grow overflow-hidden p-0">
         <ScrollArea className="h-full p-4">
           <div className="space-y-4">
-            {messages.length === 0 && (
-              <div className="text-center text-muted-foreground mt-10">
-                <p>Ask me anything about this course!</p>
-                <p className="text-sm mt-2">
-                  Try: "Explain this concept" or "Give me a quiz"
-                </p>
-              </div>
-            )}
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex gap-3 ${
-                  msg.role === "user" ? "flex-row-reverse" : ""
-                }`}
-              >
-                <div
-                  className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
-                    msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
+            <AnimatePresence mode="wait">
+              {messages.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -40 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-center text-muted-foreground mt-10"
+                >
+                  <p>Ask me anything about this course!</p>
+                  <p className="text-sm mt-2">
+                    Try: "Explain this concept" or "Give me a quiz"
+                  </p>
+                </motion.div>
+              )}
+              {messages.map((msg, i) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -40 }}
+                  transition={{ duration: 0.3 }}
+                  key={i}
+                  className={`flex gap-3 ${
+                    msg.role === "user" ? "flex-row-reverse" : ""
                   }`}
                 >
-                  {msg.role === "user" ? (
-                    <UserIcon className="h-4 w-4" />
-                  ) : (
+                  <div
+                    className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
+                      msg.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    }`}
+                  >
+                    {msg.role === "user" ? (
+                      <UserIcon className="h-4 w-4" />
+                    ) : (
+                      <Bot className="h-4 w-4" />
+                    )}
+                  </div>
+                  <div
+                    className={`rounded-lg p-3 max-w-[80%] ${
+                      msg.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                  </div>
+                </motion.div>
+              ))}
+              {isMentorLoading && (
+                <div className="flex gap-3">
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
                     <Bot className="h-4 w-4" />
-                  )}
+                  </div>
+                  <div className="bg-muted rounded-lg p-3">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </div>
                 </div>
-                <div
-                  className={`rounded-lg p-3 max-w-[80%] ${
-                    msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                </div>
-              </div>
-            ))}
-            {isMentorLoading && (
-              <div className="flex gap-3">
-                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                  <Bot className="h-4 w-4" />
-                </div>
-                <div className="bg-muted rounded-lg p-3">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                </div>
-              </div>
-            )}
+              )}
+            </AnimatePresence>
+
             <div ref={scrollRef} />
           </div>
         </ScrollArea>

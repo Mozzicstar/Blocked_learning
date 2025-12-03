@@ -36,7 +36,16 @@ export const mentorSlice: StateCreator<MentorSlice> = (set, get) => ({
       });
     } catch (error: any) {
       set({
-        mentorError: error.response?.data?.message || "Mentor failed to respond",
+        messages: [
+          ...get().messages,
+          {
+            role: "ai",
+            content:
+              error.response?.data?.message || "Mentor failed to respond",
+          },
+        ],
+        mentorError:
+          error.response?.data?.message || "Mentor failed to respond",
         isMentorLoading: false,
       });
     }

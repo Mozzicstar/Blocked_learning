@@ -30,6 +30,7 @@ export const adminSlice: StateCreator<AdminSlice> = (set) => ({
     set({ isAdminLoading: true, adminError: null });
     try {
       const stats = await adminApi.getStats();
+      if (!stats) return;
       set({ stats, isAdminLoading: false });
     } catch (error: any) {
       set({
@@ -43,6 +44,7 @@ export const adminSlice: StateCreator<AdminSlice> = (set) => ({
     set({ isAdminLoading: true, adminError: null });
     try {
       const usersList = await adminApi.getUsers();
+      if (!usersList) return;
       set({ usersList, isAdminLoading: false });
     } catch (error: any) {
       set({

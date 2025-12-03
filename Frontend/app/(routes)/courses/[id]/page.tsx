@@ -20,13 +20,13 @@ export default function CoursePage() {
   } = useAppStore();
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
 
-  // useEffect(() => {
-  //   if (params.id) {
-  //     fetchCourseById(params.id as string);
-  //   }
-  // }, [params.id, fetchCourseById]);
+  useEffect(() => {
+    if (params.id) {
+      fetchCourseById(params.id as string);
+    }
+  }, [params.id, fetchCourseById]);
 
-  if (isLoadingCourses || !currentCourse) {
+  if (!currentCourse) {
     return <LoadingSkeleton rows={4} />;
   }
 
