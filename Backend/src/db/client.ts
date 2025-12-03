@@ -121,10 +121,29 @@ export const initializeDatabase = async () => {
         metadata_hash TEXT,
         tags TEXT,
         status TEXT DEFAULT 'draft',
+        price REAL DEFAULT 0,
+        is_paid INTEGER DEFAULT 0,
+        thumbnail_url TEXT,
+        category TEXT,
+        difficulty TEXT DEFAULT 'beginner',
+        duration_hours INTEGER DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (creator_wallet) REFERENCES users(wallet)
       );
     `);
+
+    // Add price column if it doesn't exist (migration for existing databases)
+    try {
+      sqlite.prepare('SELECT price FROM courses LIMIT 1').get();
+    } catch (e) {
+      console.log('Adding price columns to courses table...');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN price REAL DEFAULT 0');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN is_paid INTEGER DEFAULT 0');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN thumbnail_url TEXT');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN category TEXT');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN difficulty TEXT DEFAULT "beginner"');
+      sqlite.exec('ALTER TABLE courses ADD COLUMN duration_hours INTEGER DEFAULT 0');
+    }
 
     // Create modules table
     sqlite.exec(`

@@ -99,16 +99,26 @@ export const courseService = {
       const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const tagsJson = JSON.stringify(courseData.tags);
 
+      // Ensure user exists before creating course (auto-create if not)
+      const existingUser = await db.query('SELECT id FROM users WHERE wallet = ?', [courseData.creator_wallet]);
+      if (existingUser.rows.length === 0) {
+        await db.query('INSERT INTO users (wallet, display_name) VALUES (?, ?)', [courseData.creator_wallet, 'Creator']);
+      }
+
+      const isPaid = courseData.price && courseData.price > 0 ? 1 : 0;
+
       const result = await db.query(
-        `INSERT INTO courses (title, description, creator_wallet, file_cid, tags, status) 
-         VALUES (?, ?, ?, ?, ?, ?) RETURNING *`,
+        `INSERT INTO courses (title, description, creator_wallet, file_cid, tags, status, price, is_paid) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING *`,
         [
           courseData.title,
           courseData.description,
           courseData.creator_wallet,
           courseData.fileCid,
           tagsJson,
-          'draft'
+          'published',
+          courseData.price || 0,
+          isPaid
         ]
       );
 
