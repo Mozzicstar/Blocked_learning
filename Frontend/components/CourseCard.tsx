@@ -9,13 +9,15 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
+  const isPublished = course.status === 'published' || course.ip_token_id !== null;
+  
   return (
     <Card className="flex flex-col h-full hover:shadow-lg transition-shadow">
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="line-clamp-2">{course.title}</CardTitle>
-          {course.isPublished ? (
-            <Badge variant="default">Published</Badge>
+          {isPublished ? (
+            <Badge variant="default">On-Chain</Badge>
           ) : (
             <Badge variant="secondary">Draft</Badge>
           )}
@@ -25,10 +27,15 @@ export default function CourseCard({ course }: CourseCardProps) {
         <p className="text-muted-foreground text-sm line-clamp-3">
           {course.description}
         </p>
-        <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{course.modules.length} Modules</span>
-          <span>•</span>
-          <span>{course.price} ETH</span>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {course.tags?.slice(0, 3).map((tag) => (
+            <Badge key={tag} variant="outline" className="text-xs">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+        <div className="mt-3 text-xs text-muted-foreground">
+          {course.modules?.length || 0} Modules • Creator: {course.creator_wallet?.slice(0, 6)}...{course.creator_wallet?.slice(-4)}
         </div>
       </CardContent>
       <CardFooter>

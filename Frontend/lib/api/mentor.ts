@@ -1,46 +1,31 @@
 import { api } from "./client";
 
 export const mentorApi = {
-  explain: async (context: string, question: string) => {
-    const response = await api.post("/api/mentor/explain", { context, question });
+  // POST /api/mentor/explain - Personalized explanations
+  explain: async (question: string) => {
+    const response = await api.post("/api/mentor/explain", { question });
     return response.data;
   },
 
-  suggest: async (context: string) => {
-    const response = await api.post("/api/mentor/suggest", { context });
+  // POST /api/mentor/suggest - Smart recommendations
+  suggest: async (progress: any) => {
+    const response = await api.post("/api/mentor/suggest", { progress });
     return response.data;
   },
 
+  // POST /api/mentor/audit-code - Security vulnerability detection
   auditCode: async (code: string) => {
     const response = await api.post("/api/mentor/audit-code", { code });
     return response.data;
   },
 
-  generateProject: async (prompt: string) => {
-    const response = await api.post("/api/mentor/generate-project", { prompt });
+  // POST /api/mentor/generate-project - Custom project templates
+  generateProject: async (topic: string, difficulty: string) => {
+    const response = await api.post("/api/mentor/generate-project", { topic, difficulty });
     return response.data;
   },
 
-  semanticSearch: async (query: string) => {
-    const response = await api.post("/api/search/semantic", { query });
-    return response.data;
-  },
-
-  analyzeVideo: async (videoId: string) => {
-    const response = await api.post("/api/analyze/video", { videoId });
-    return response.data;
-  },
-
-  analyzeQuality: async (content: string) => {
-    const response = await api.post("/api/analyze/quality", { content });
-    return response.data;
-  },
-
-  generateQuiz: async (topic: string) => {
-    const response = await api.post("/api/generate/quiz", { topic });
-    return response.data;
-  },
-
+  // GET /api/mentor/profile/:wallet - Get learning profile
   getMentorProfile: async (walletAddress: string) => {
     const response = await api.get(`/api/mentor/profile/${walletAddress}`);
     return response.data;

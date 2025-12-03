@@ -1,23 +1,18 @@
 import { StateCreator } from "zustand";
 import { coursesApi } from "../../lib/api/courses";
 
-export interface Module {
-  id: string;
-  title: string;
-  duration: string;
-  videoUrl?: string;
-  content?: string;
-}
-
 export interface Course {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  creator: string;
-  price: string;
-  modules: Module[];
-  isPublished: boolean;
-  contractAddress?: string;
+  creator_wallet: string;
+  file_cid: string;
+  ip_token_id: string | null;
+  metadata_hash: string | null;
+  tags: string[];
+  status: string;
+  created_at: string;
+  modules?: any[];
 }
 
 export interface CoursesSlice {
@@ -30,23 +25,24 @@ export interface CoursesSlice {
   fetchOnChainCourses: () => Promise<void>;
 }
 
-import { MOCK_COURSES } from "../../lib/mockData";
-
 export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
-  courses: MOCK_COURSES,
-  currentCourse: MOCK_COURSES[0],
+  courses: [],
+  currentCourse: null,
   isLoadingCourses: false,
   coursesError: null,
 
   fetchCourses: async () => {
     set({ isLoadingCourses: true, coursesError: null });
     try {
+      console.log("[Store] Calling fetchCourses...");
       const courses = await coursesApi.getCourses();
-      set({ courses, isLoadingCourses: false });
+      console.log("[Store] Got courses:", courses);
+      set({ courses: courses || [], isLoadingCourses: false });
     } catch (error: any) {
+      console.error("[Store] Failed to fetch courses:", error);
       set({
-        coursesError:
-          error.response?.data?.message || "Failed to fetch courses",
+        courses: [],
+        coursesError: error.response?.data?.message || "Failed to fetch courses",
         isLoadingCourses: false,
       });
     }
@@ -55,10 +51,16 @@ export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
   fetchCourseById: async (id: string) => {
     set({ isLoadingCourses: true, coursesError: null });
     try {
-      const course = await coursesApi.getCourseById(id);
-      set({ currentCourse: course, isLoadingCourses: false });
+      const data = await coursesApi.getCourseById(id);
+      // Backend returns { course, modules }
+      set({ 
+        currentCourse: data?.course ? { ...data.course, modules: data.modules || [] } : null, 
+        isLoadingCourses: false 
+      });
     } catch (error: any) {
+      console.error("Failed to fetch course:", error);
       set({
+        currentCourse: null,
         coursesError: error.response?.data?.message || "Failed to fetch course",
         isLoadingCourses: false,
       });
@@ -69,9 +71,11 @@ export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
     set({ isLoadingCourses: true, coursesError: null });
     try {
       const courses = await coursesApi.getOnChainCourses();
-      set({ courses, isLoadingCourses: false });
+      set({ courses: courses || [], isLoadingCourses: false });
     } catch (error: any) {
+      console.error("Failed to fetch on-chain courses:", error);
       set({
+        courses: [],
         coursesError:
           error.response?.data?.message || "Failed to fetch on-chain courses",
         isLoadingCourses: false,

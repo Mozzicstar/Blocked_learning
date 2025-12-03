@@ -3,20 +3,16 @@ import { api } from "./client";
 export const progressApi = {
   getUserProgress: async () => {
     const response = await api.get("/api/user/progress");
-    return response.data;
+    return response.data.data || response.data;
   },
 
-  updateProgress: async (courseId: string, moduleId: string, progress: number) => {
-    const response = await api.post("/api/user/progress", {
-      courseId,
-      moduleId,
-      progress,
-    });
+  markModuleComplete: async (moduleId: number) => {
+    const response = await api.post("/api/user/progress", { moduleId });
     return response.data;
   },
 
   getCourseProgress: async (courseId: string) => {
-    const response = await api.get(`/api/user/progress/${courseId}`);
-    return response.data;
+    const response = await api.get(`/api/user/progress/course/${courseId}`);
+    return response.data.data || response.data;
   },
 };

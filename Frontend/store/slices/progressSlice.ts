@@ -2,27 +2,22 @@ import { StateCreator } from "zustand";
 import { progressApi } from "../../lib/api/progress";
 
 export interface UserProgress {
-  courseId: string;
-  completedModules: string[];
-  progressPercentage: number;
+  completedModules: number;
+  totalXp: number;
+  completedCourses: number;
+  progress: any[];
 }
 
 export interface ProgressSlice {
-  userProgress: UserProgress[];
+  userProgress: UserProgress | null;
   isLoadingProgress: boolean;
   progressError: string | null;
   fetchUserProgress: () => Promise<void>;
-  updateUserProgress: (
-    courseId: string,
-    moduleId: string,
-    progress: number
-  ) => Promise<void>;
+  markModuleComplete: (moduleId: number) => Promise<void>;
 }
 
-import { MOCK_USER_PROGRESS } from "../../lib/mockData";
-
 export const progressSlice: StateCreator<ProgressSlice> = (set) => ({
-  userProgress: MOCK_USER_PROGRESS,
+  userProgress: null,
   isLoadingProgress: false,
   progressError: null,
 
@@ -32,24 +27,26 @@ export const progressSlice: StateCreator<ProgressSlice> = (set) => ({
       const userProgress = await progressApi.getUserProgress();
       set({ userProgress, isLoadingProgress: false });
     } catch (error: any) {
+      console.error("Failed to fetch progress:", error);
+      // Set default values on error
       set({
-        progressError:
-          error.response?.data?.message || "Failed to fetch progress",
+        userProgress: { completedModules: 0, totalXp: 0, completedCourses: 0, progress: [] },
+        progressError: error.response?.data?.message || "Failed to fetch progress",
         isLoadingProgress: false,
       });
     }
   },
 
-  updateUserProgress: async (courseId, moduleId, progress) => {
+  markModuleComplete: async (moduleId: number) => {
     try {
-      await progressApi.updateProgress(courseId, moduleId, progress);
-      // Optimistically update or refetch
+      await progressApi.markModuleComplete(moduleId);
+      // Refetch progress after marking complete
       const userProgress = await progressApi.getUserProgress();
       set({ userProgress });
     } catch (error: any) {
+      console.error("Failed to mark module complete:", error);
       set({
-        progressError:
-          error.response?.data?.message || "Failed to update progress",
+        progressError: error.response?.data?.message || "Failed to update progress",
       });
     }
   },

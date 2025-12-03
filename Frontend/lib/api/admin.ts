@@ -3,16 +3,16 @@ import { api } from "./client";
 export const adminApi = {
   getStats: async () => {
     const response = await api.get("/api/admin/stats");
-    return response.data;
+    return response.data.data || response.data;
   },
 
-  getUsers: async () => {
-    const response = await api.get("/api/admin/users");
-    return response.data;
+  getUsers: async (limit = 50, offset = 0) => {
+    const response = await api.get(`/api/admin/users?limit=${limit}&offset=${offset}`);
+    return response.data.data || response.data;
   },
 
-  banUser: async (walletAddress: string) => {
-    const response = await api.post("/api/admin/ban", { walletAddress });
+  banUser: async (wallet: string, banned: boolean) => {
+    const response = await api.post("/api/admin/ban", { wallet, banned });
     return response.data;
   },
 };
