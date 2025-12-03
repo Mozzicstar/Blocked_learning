@@ -9,9 +9,9 @@ import SearchBar from "@/components/SearchBar";
 export default function CoursesPage() {
   const { courses, fetchCourses, isLoadingCourses } = useAppStore();
 
-  useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
+  // useEffect(() => {
+  //   fetchCourses();
+  // }, [fetchCourses]);
 
   return (
     <div className="space-y-8">

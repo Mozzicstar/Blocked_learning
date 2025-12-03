@@ -8,11 +8,16 @@ export interface CreatorSlice {
   uploadError: string | null;
   fetchMyCourses: (walletAddress: string) => Promise<void>;
   uploadCourse: (courseData: any) => Promise<void>;
-  publishCourseToBlockchain: (courseId: string, txHash: string) => Promise<void>;
+  publishCourseToBlockchain: (
+    courseId: string,
+    txHash: string
+  ) => Promise<void>;
 }
 
+import { MOCK_COURSES } from "../../lib/mockData";
+
 export const creatorSlice: StateCreator<CreatorSlice> = (set) => ({
-  myCourses: [],
+  myCourses: MOCK_COURSES.filter((c) => c.creator === "0xCreator1...0001"),
   isUploading: false,
   uploadError: null,
 

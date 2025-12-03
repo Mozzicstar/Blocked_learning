@@ -67,15 +67,27 @@ export default function WalletConnect() {
   }
 
   return (
-    <Button onClick={() => open()} disabled={isSigning || isLoadingUser}>
-      {isSigning || isLoadingUser ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Connecting...
-        </>
-      ) : (
-        "Connect Wallet"
-      )}
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button
+        onClick={() => {
+          console.log("Connect Wallet clicked");
+          open().catch((e) => console.error("Web3Modal open error:", e));
+        }}
+        disabled={isSigning || isLoadingUser}
+      >
+        {isSigning || isLoadingUser ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Connecting...
+          </>
+        ) : (
+          "Connect Wallet"
+        )}
+      </Button>
+      {/* Debug: Official Web3Modal Button */}
+      <div className="text-xs text-center text-muted-foreground">
+        <w3m-button />
+      </div>
+    </div>
   );
 }

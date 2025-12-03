@@ -35,8 +35,12 @@ createWeb3Modal({
   enableOnramp: true,
 });
 
-if (projectId !== "626") {
-  console.error("❌ Missing NEXT_PUBLIC_WALLETCONNECT_ID in .env.local");
+if (projectId === "626") {
+  console.error(
+    "❌ Missing NEXT_PUBLIC_WALLETCONNECT_ID in .env.local. Web3Modal may not work correctly."
+  );
+} else {
+  console.log("✅ WalletConnect Project ID loaded.");
 }
 
 export default function WalletProvider({ children }: { children: ReactNode }) {

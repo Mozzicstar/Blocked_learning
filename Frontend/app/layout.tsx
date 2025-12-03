@@ -2,9 +2,6 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import localFont from "next/font/local";
 import Providers from "@/components/Providers";
-import { SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import Header from "@/components/Header";
 
 const monaSans = localFont({
   src: [
@@ -41,14 +38,8 @@ export default function RootLayout({
     <html lang="en" className={monaSans.variable} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <Providers>
-          <AppSidebar />
-          <SidebarInset>
-            <Header />
-            <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              {children}
-            </main>
-            <Toaster richColors closeButton />
-          </SidebarInset>
+          {children}
+          <Toaster richColors closeButton />
         </Providers>
       </body>
     </html>

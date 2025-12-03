@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import { authApi } from "../../lib/api/auth";
+import { MOCK_USERS } from "@/lib/mockData";
 
 export interface User {
   id: string;
@@ -19,7 +20,7 @@ export interface UserSlice {
 }
 
 export const userSlice: StateCreator<UserSlice> = (set) => ({
-  user: null,
+  user: MOCK_USERS[0],
   isAuthenticated: false,
   isLoadingUser: false,
   userError: null,

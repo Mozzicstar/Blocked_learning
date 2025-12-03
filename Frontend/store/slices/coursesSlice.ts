@@ -1,13 +1,21 @@
 import { StateCreator } from "zustand";
 import { coursesApi } from "../../lib/api/courses";
 
+export interface Module {
+  id: string;
+  title: string;
+  duration: string;
+  videoUrl?: string;
+  content?: string;
+}
+
 export interface Course {
   id: string;
   title: string;
   description: string;
   creator: string;
   price: string;
-  modules: any[];
+  modules: Module[];
   isPublished: boolean;
   contractAddress?: string;
 }
@@ -22,9 +30,11 @@ export interface CoursesSlice {
   fetchOnChainCourses: () => Promise<void>;
 }
 
+import { MOCK_COURSES } from "../../lib/mockData";
+
 export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
-  courses: [],
-  currentCourse: null,
+  courses: MOCK_COURSES,
+  currentCourse: MOCK_COURSES[0],
   isLoadingCourses: false,
   coursesError: null,
 
@@ -35,7 +45,8 @@ export const coursesSlice: StateCreator<CoursesSlice> = (set) => ({
       set({ courses, isLoadingCourses: false });
     } catch (error: any) {
       set({
-        coursesError: error.response?.data?.message || "Failed to fetch courses",
+        coursesError:
+          error.response?.data?.message || "Failed to fetch courses",
         isLoadingCourses: false,
       });
     }
