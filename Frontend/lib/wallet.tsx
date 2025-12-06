@@ -3,12 +3,36 @@
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { WagmiProvider } from "wagmi";
-import { baseSepolia } from "wagmi/chains";
+import { defineChain } from "viem";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
 
+// Camp Network Testnet
+const campNetwork = defineChain({
+  id: 123420001114,
+  name: "Camp Network Testnet",
+  nativeCurrency: {
+    name: "CAMP",
+    symbol: "CAMP",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.basecamp.t.raas.gelato.cloud"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Camp Explorer",
+      url: "https://basecamp.cloud.blockscout.com",
+    },
+  },
+});
+
 // 1. Get projectId at https://cloud.walletconnect.com
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "626";
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_ID || 
+                  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 
+                  "demo-project-id";
 
 // 2. Create wagmiConfig
 const metadata = {
@@ -18,7 +42,7 @@ const metadata = {
   icons: ["https://blockedlearning.xyz/icon.png"],
 };
 
-const chains = [baseSepolia] as const;
+const chains = [campNetwork] as const;
 const config = defaultWagmiConfig({
   chains,
   projectId,
@@ -27,17 +51,17 @@ const config = defaultWagmiConfig({
 });
 
 // 3. Create modal
-// 3. Create modal
 createWeb3Modal({
   wagmiConfig: config,
   projectId,
-  enableAnalytics: false, // Disable analytics to prevent 400 errors with invalid IDs
-  enableOnramp: true,
+  enableAnalytics: false,
+  enableOnramp: false,
+  themeMode: "dark",
 });
 
-if (projectId === "626") {
-  console.error(
-    "❌ Missing NEXT_PUBLIC_WALLETCONNECT_ID in .env.local. Web3Modal may not work correctly."
+if (projectId === "demo-project-id") {
+  console.warn(
+    "⚠️ Using demo WalletConnect ID. Get a real one at https://cloud.walletconnect.com"
   );
 } else {
   console.log("✅ WalletConnect Project ID loaded.");
